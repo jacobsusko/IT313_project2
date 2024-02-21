@@ -10,8 +10,22 @@
 </head>
 <body>
     <header>
-        <h1>Welcome!</h1>
-       
+        <h1 id="userData">Welcome!</h1>
+        <script>
+        // Make an HTTP request to retrieve email and password data
+        fetch('/userData')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to retrieve user data');
+                }
+                return response.json();
+            })
+            .then(userData => {
+                console.log(userData);
+                document.getElementById('userData').innerHTML = `Hello ${userData.username}!`;
+            })
+            .catch(error => console.error('Error:', error));
+        </script>
     </header>
 
 
