@@ -4,36 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buildings</title>
-    <link href="building.css" rel="stylesheet">
     <link href="index.css" rel="stylesheet">
+    <link href="building.css" rel="stylesheet">
 
 </head>
 <body>
     <header>
         <h1 id="userData">Welcome!</h1>
         <script>
-        // Make an HTTP request to retrieve email and password data
-        fetch('/userData')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to retrieve user data');
-                }
-                return response.json();
-            })
-            .then(userData => {
-                console.log(userData);
-                document.getElementById('userData').innerHTML = `Hello ${userData.username}!`;
-            })
-            .catch(error => console.error('Error:', error));
+            // Make an HTTP request to retrieve user data
+            fetch('/userData')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to retrieve user data');
+                    }
+                    return response.json();
+                })
+                .then(userData => {
+                    document.getElementById('userData').innerHTML = `Hello ${userData.username}!`;
+                })
+                .catch(error => console.error('Error:', error));
         </script>
     </header>
 
+    <section id = "names">
+        <a href="#" onclick="showBuilding(event, 'engeo')">Engeo</a>
+        <a href="#" onclick="showBuilding(event, 'king')">King Hall</a>
+        <a href="#" onclick="showBuilding(event, 'physchem')">Phys/Chem</a>
+    </section>
 
-        <section>
-            <a href="engeo.html"><p>EnGeo</p></a>
-            <a href="king.html"><p>King Hall</p></a>
-            <a href="chem.html"><p>Phys/Chem</p></a>
-        </section>
- 
+    <section id="engeo" class="building-info">
+        <h2>Engeo Building</h2>
+        <!-- Your content for Engeo Building goes here -->
+    </section>
+
+    <section id="king" class="building-info">
+        <h2>King Hall</h2>
+        <!-- Your content for King Hall goes here -->
+    </section>
+
+    <section id="physchem" class="building-info">
+        <h2>Phys/Chem Building</h2>
+        <!-- Your content for Phys/Chem Building goes here -->
+    </section>
+
+    <script>
+        function showBuilding(event, buildingName) {
+            event.preventDefault();
+
+            // Hide all building sections
+            const allBuildingSections = document.querySelectorAll('.building-info');
+            allBuildingSections.forEach(section => {
+                section.style.display = 'none';
+            });
+
+            // Show the selected building section
+            const selectedBuildingSection = document.getElementById(buildingName);
+            if (selectedBuildingSection) {
+                selectedBuildingSection.style.display = 'block';
+            }
+        }
+    </script>
 </body>
 </html>
