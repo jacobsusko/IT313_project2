@@ -1,44 +1,19 @@
-body {
-    height: 100vh;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #CBB677;
-    }
-
-main {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    }
-
-header {
-    color: white;
-    background-color: #450084;
-    width: 100%;
-    border-bottom: 1px solid white; 
-    display: flex;
-    justify-content: center;
-    margin: 0;
-}
-section{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/*!
+ * Teo Z.
+ */
+button{
     border: 2px solid;
     border-radius: 2%;
-    margin: 2%;
+    margin: 5%;
     padding: 2%;
-    background-color: #dfd2aa;
-    width: 600px;
-    height: 50vh;
-}
-p{
-    border: solid 3px;
-    padding: 3%;
-    width: 300px;
-    color: white;
     background-color: #450084;
+    width: 600px;
+    text-decoration: none;
+    color: white;
+    font-size: larger;
+    display: flex;
+    font-family: 'Times New Roman', Times, serif;
+
+    
 }
+
