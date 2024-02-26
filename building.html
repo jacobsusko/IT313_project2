@@ -10,7 +10,7 @@
 </head>
 <body>
     <header>
-        <h1 id="userData">Welcome!</h1>
+        <h1 id="userData"></h1>
         <script>
             // Make an HTTP request to retrieve user data
             fetch('/userData')
@@ -21,7 +21,7 @@
                     return response.json();
                 })
                 .then(userData => {
-                    document.getElementById('userData').innerHTML = `Hello ${userData.username}!`;
+                    document.getElementById('userData').innerHTML = `Hello ${userData.first_name}!`;
                 })
                 .catch(error => console.error('Error:', error));
         </script>
@@ -30,7 +30,7 @@
     <div id="hallList">
         
     </div>
-
+    <button onclick="logout()" id="logout">Logout</button>
     <script>
         // Function to fetch hall names from the server and display them as buttons
         async function fetchHallsAndDisplay() {
@@ -54,6 +54,21 @@
 
         // Call the function to fetch halls and display them as buttons when the HTML is loaded
         window.addEventListener('load', fetchHallsAndDisplay);
+    </script>
+    <script>
+        function logout () {
+            fetch('/logout')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to logout');
+                    }
+                    // Redirect to login page after logout
+                    window.location.href = '/';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
     </script>
 </body>
 </html>
