@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="Teo Z" content="width=device-width, initial-scale=1.0">
     <title>Buildings</title>
     <link href="index.css" rel="stylesheet">
     <link href="building.css" rel="stylesheet">
@@ -27,43 +27,33 @@
         </script>
     </header>
 
-    <section id = "names">
-        <a href="#" onclick="showBuilding(event, 'engeo')">Engeo</a>
-        <a href="#" onclick="showBuilding(event, 'king')">King Hall</a>
-        <a href="#" onclick="showBuilding(event, 'physchem')">Phys/Chem</a>
-    </section>
-
-    <section id="engeo" class="building-info">
-        <h2>Engeo Building</h2>
-        <!-- Your content for Engeo Building goes here -->
-    </section>
-
-    <section id="king" class="building-info">
-        <h2>King Hall</h2>
-        <!-- Your content for King Hall goes here -->
-    </section>
-
-    <section id="physchem" class="building-info">
-        <h2>Phys/Chem Building</h2>
-        <!-- Your content for Phys/Chem Building goes here -->
-    </section>
+    <div id="hallList">
+        
+    </div>
 
     <script>
-        function showBuilding(event, buildingName) {
-            event.preventDefault();
+        // Function to fetch hall names from the server and display them as buttons
+        async function fetchHallsAndDisplay() {
+            const response = await fetch('/halls');
+            const halls = await response.json();
 
-            // Hide all building sections
-            const allBuildingSections = document.querySelectorAll('.building-info');
-            allBuildingSections.forEach(section => {
-                section.style.display = 'none';
+            const hallListDiv = document.getElementById('hallList');
+            hallListDiv.innerHTML = ''; // Clear previous content
+
+            halls.forEach(hall => {
+                const hallButton = document.createElement('button');
+                hallButton.textContent = hall;
+                hallButton.id = hall; // Set the id attribute to the hall name
+                hallButton.addEventListener('click', () => {
+                    // Handle button click (you can add your logic here)
+                    console.log('Clicked on hall:', hall);
+                });
+                hallListDiv.appendChild(hallButton);
             });
-
-            // Show the selected building section
-            const selectedBuildingSection = document.getElementById(buildingName);
-            if (selectedBuildingSection) {
-                selectedBuildingSection.style.display = 'block';
-            }
         }
+
+        // Call the function to fetch halls and display them as buttons when the HTML is loaded
+        window.addEventListener('load', fetchHallsAndDisplay);
     </script>
 </body>
 </html>
