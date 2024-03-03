@@ -1,0 +1,121 @@
+<!-- 
+    Austin Hodgkiss
+ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="UserSettings.css">
+</head>
+<body>
+    <header>
+        <div class="hamburger-menu" onclick="toggleMenu()">
+            <div class="bar"> Pages</div>
+        </div>
+        <h1 id="headerTitle">User Profile</h1>
+        <div id="linksContainer">
+            <a href="building.html">Buildings</a>
+            <a href="Schedule.html">Schedule</a>
+        </div>    
+
+        <script>
+            function toggleMenu() {
+                var headerTitle = document.getElementById('headerTitle');
+                var linksContainer = document.getElementById('linksContainer');
+        
+                if (headerTitle.style.display === 'none') {
+                    headerTitle.style.display = 'block';
+                    linksContainer.style.display = 'none';
+                } else {
+                    headerTitle.style.display = 'none';
+                    linksContainer.style.display = 'flex';
+                }
+            }
+        </script>
+    </header>
+    
+    <main>
+        <section>
+            <h2>User Information</h2>
+            <div id="userInfo"></div>
+        
+            <h2>Update Email</h2>
+            <form id="updateEmailForm">
+                <label for="email">New Email:</label>
+                <input type="email" id="email" name="email" required>
+                <button type="submit">Update Email</button>
+            </form>
+
+            <h2>Update Password</h2>
+            <form id="updatePasswordForm">  
+                <div>
+                    <label for="password">New Password:</label>
+                    <input type="password" id="password" name="password" required>
+                    <button type="submit">Update Password</button>
+                </div>
+            </form>
+        </section>
+    </main>
+    <script>
+
+        // Implement calls to database to grab the following information.
+        function fetchUserData() {
+            
+            // For demo
+            const userData = {
+                username: "demo_user",
+                firstName: "Austin",
+                lastName: "Hodgkiss",
+                email: "john.doe@example.com",
+                password: "********"
+            };
+            return userData;
+        }
+         
+        // Function to update email
+        // function updateEmail(email) {
+        
+        // }
+
+        // Function to update password
+        // function updatePassword(password) {
+           
+        // }
+
+        // Function to populate user information on the page
+        function populateUserInfo(user) {
+            document.getElementById('userInfo').innerHTML = `
+                <p><strong>Username:</strong> ${user.username}</p>
+                <p><strong>Name:</strong> ${user.firstName} ${user.lastName}</p>
+                <p><strong>Email:</strong> ${user.email}</p>
+                <p><strong>Password:</strong> ${user.password}</p>
+            `;
+            document.getElementById('email').value = user.email;
+            document.getElementById('password').value = ""; // For security reasons, clear the password field
+        }
+
+        // Fetch user data and populate the page when it's loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const userData = fetchUserData();
+            populateUserInfo(userData);
+        });
+
+        // Update email when the email form is submitted
+        document.getElementById('updateEmailForm').addEventListener('submit', (event) => {
+            event.preventDefault(); 
+            const email = document.getElementById('email').value;
+            updateEmail(email);
+        });
+
+        // Update password when the password form is submitted
+        document.getElementById('updatePasswordForm').addEventListener('submit', (event) => {
+            event.preventDefault(); 
+            const password = document.getElementById('password').value;
+            updatePassword(password);
+        });
+
+    </script>
+</body>
+</html>

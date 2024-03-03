@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="Holly M" content="width=device-width, initial-scale=1.0">
+    <title>Schedulling Page</title>
+    <link href="schedulling.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <h1>Schedule a Room</h1>
+    </header>
+
+    <div id="roomList">
+        
+    </div>
+    <script>
+        // Function to fetch hall names from the server and display them as buttons
+        async function fetchHallsAndDisplay() {
+            const response = await fetch('/halls');
+            const halls = await response.json();
+
+            const hallListDiv = document.getElementById('roomList');
+            hallListDiv.innerHTML = ''; // Clear previous content
+
+            halls.forEach(hall => {
+                const hallButton = document.createElement('button');
+                hallButton.textContent = hall;
+                hallButton.id = hall; // Set the id attribute to the hall name
+                hallButton.addEventListener('click', () => {
+                    // Handle button click (you can add your logic here)
+                    console.log('Clicked on hall:', hall);
+                });
+                hallListDiv.appendChild(hallButton);
+            });
+        }
+
+        // Call the function to fetch halls and display them as buttons when the HTML is loaded
+        window.addEventListener('load', fetchHallsAndDisplay);
+    </script>
+   
+</body>
+</html>
