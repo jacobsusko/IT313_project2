@@ -6,7 +6,7 @@ button {
     text-decoration: none;
     border: none;
     border: solid 2px;
-    border-radius: 10px;
+    border-radius: 2%;
     padding: 1%;
     margin: 3%;
     width: 400px;
@@ -16,5 +16,4 @@ button {
     font-size: larger;
     display: flex;
     font-family: 'Times New Roman', Times, serif;
-    border-radius: 2%;
 }
