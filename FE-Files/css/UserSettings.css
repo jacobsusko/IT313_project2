@@ -1,25 +1,42 @@
 /* AUSTIN HODGKISS */
 body {
-    height: 100vh;
     margin: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     background-color: #CBB677;
-}
+    }
     
 main {
-    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-}
+    margin: 0;
+    }
 
 #login{
     display: flex;
     flex-direction: column;
     width: 250px;
     gap: 10px;
+}
+
+header {
+    color: white;
+    background-color: #450084;
+    width: 100vw;
+    border-bottom: 1px solid white; 
+    margin: 0;
+    height: 10vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+}
+
+h1{
+    flex-grow: 1;
+    margin: 1vw;
 }
 section{
     display: flex;
@@ -31,69 +48,48 @@ section{
     padding: 2%;
     background-color: #dfd2aa;
     width: 600px;
-    height: 70vh;
-}
-header {
-    color: white;
-    background-color: #450084;
-    width: 100%;
-    border-bottom: 1px solid white; 
-    display: flex;
-    justify-content: center;
-    margin: 0;
-}
-.hamburger-menu {
-    position: absolute;
-    top: 25px;
-    left: 30px;
-    color: white; 
-    border-bottom: 1px solid white; 
-}
-.hamburger-menu :hover{
-    transform: scale(1.5);
-    text-decoration: underline;
-    border-bottom: 1px solid white; 
+    height: 50vh;
+    }
+
+/* Nav Bar styling */
+nav{
+    display: inline-block;
 }
 
-#linksContainer {
+nav ul {
+    list-style: none;
+    padding: 0;
     display: flex;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    background-color: #450084;
-    width: 100%;
-    border-bottom: 1px solid white;
+    justify-content: space-around;
+    align-self: flex-end;
     margin: 0;
-    padding: 10px;
 }
 
-#linksContainer a {
-    color: white; 
-    font-size: 34px; 
-    margin-right: 20px;
-    margin-left: 10px;
+nav li {
+    font-size: larger;
+    text-align: center;
+}
+
+nav li a {
     text-decoration: none;
+    color: white;
+    transition: color 0.3s ease;
+    padding: 10px 15px; 
 }
 
-#linksContainer a:last-child {
-    margin-right: 0;
+#logout{
+    padding: 1vh;
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: medium;
+    width: auto;
+    margin: 0;
+    margin-right: 1vw;
 }
 
-#linksContainer a:hover {
-    color: #CBB677; 
+#logout:hover{
+    opacity: 0.75;
 }
-
-.bar {
-    color: #450084;
-    font-weight: bold;
-    padding-right: 3px;
-    padding-left: 3px;
-    background-color: #CBB677;
-    border-radius: 10%;
-    transition: all 0.3s ease;
-}
-
-.hidden {
-    display: none;
-}
-
