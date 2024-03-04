@@ -1,7 +1,7 @@
 /*!
- * Robbie and Teo
+ * Teo
  */
-body {
+ body {
     margin: 0;
     display: flex;
     flex-direction: column;
@@ -9,32 +9,57 @@ body {
     background-color: #CBB677;
     }
     
-    main {
+main {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0;
     }
-    section, div{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        border: 2px solid;
-        border-radius: 2%;
-        margin: 2%;
-        padding: 2%;
-        background-color: #dfd2aa;
-        width: 600px;
-        height: 50vh;
+section, div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid;
+    border-radius: 2%;
+    margin: 2%;
+    padding: 2%;
+    background-color: #dfd2aa;
+    width: 600px;
+    height: 50vh;
     }
-    header {
-        color: white;
-        background-color: #450084;
-        width: 100vw;
-        border-bottom: 1px solid white; 
-        margin: 0;
-        height: 10vh;
-        display: flex;
-        justify-content: center;
+header {
+    color: white;
+    background-color: #450084;
+    width: 100vw;
+    border-bottom: 1px solid white; 
+    margin: 0;
+    height: 10vh;
+    display: flex;
+    justify-content: center;
         
     }
+nav{
+        display: inline-block;
+    }
+    
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: space-around;
+    align-self: flex-end;
+    margin: 0;
+    }
+    
+nav li {
+    font-size: larger;
+    text-align: center;
+    }
+    
+nav li a {
+    text-decoration: none;
+    color: white;
+    transition: color 0.3s ease;
+    padding: 10px 15px; 
+    }
+    

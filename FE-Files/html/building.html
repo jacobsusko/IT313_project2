@@ -11,6 +11,12 @@
 <body>
     <header>
         <h1 id="userData"></h1>
+        <nav class ="navlink">
+            <ul>
+                <li class="navlink"><a href="schedulling.html">Scheduling</a></li>
+                <li class="navlink"><a href=" ">Settings</a></li>
+            </ul>
+        </nav>
         <script>
             // Make an HTTP request to retrieve user data
             fetch('/userData')
@@ -22,10 +28,13 @@
                 })
                 .then(userData => {
                     document.getElementById('userData').innerHTML = `Hello ${userData.first_name}!`;
+                    console.log(userData);
                 })
                 .catch(error => console.error('Error:', error));
         </script>
             <button onclick ="logout()" id ="logout">Log out</button>
+
+            
     </header>
     <main>
 
@@ -58,6 +67,7 @@
         }
 
         async function fetchRoomOccupancy(parameter) {
+            let index = 0;
             try {
                 const roomList = document.getElementById('roomList');
                 roomList.innerText ='';
@@ -75,6 +85,7 @@
                 headerRow.appendChild(headerCell);
             });
             table.appendChild(headerRow);
+            const credentials = await getCredentials();
 
                // Loop through each room and add a row to the table
             rooms.forEach(room => {
@@ -85,6 +96,25 @@
                     cell.innerHTML = columnText;
                     row.appendChild(cell);
                 });
+                let cell1 = document.createElement('td');
+                if(credentials.loggedInEmp){
+                    cell1.innerHTML = `
+                        <form action="/updateRoom" method="POST">
+                            <input type="hidden" name="hallName_${index}" value="${room.hall_name}">
+                            <input type="hidden" name="roomNum_${index}" value="${room.room_num}">
+                            <button class='roomButton' onclick="">Update Occupancy</button>
+                        </form>
+                    `;
+                } else {
+                    cell1.innerHTML = `
+                        <form action="/updateFlag" method="POST">
+                            <input type="hidden" name="hallName_${index}" value="${room.hall_name}">
+                            <input type="hidden" name="roomNum_${index}" value="${room.room_num}">
+                            <button class='roomButton' onclick="">Update Flag</button>
+                        </form>
+                    `;
+                }
+                row.appendChild(cell1);
                 table.appendChild(row);
             });
 
@@ -92,6 +122,7 @@
                 // Handle errors if any
                 console.error('Error fetching room occupancy:', error);
             }
+            index++;
 }
 
         // Call the function to fetch halls and display them as buttons when the HTML is loaded
@@ -112,6 +143,20 @@
                    console.error('Error:', error);
             });
     }
+    </script>
+    <script>
+        async function getCredentials() {
+            try {
+            const response = await fetch('/getCredentials');
+                if (!response.ok) {
+                    throw new Error('Failed to logout');
+                } 
+                return await response.json();
+            } catch (error) {
+                console.error('Error: ', error)
+            }
+        }
+        
     </script>
 
 </body>
