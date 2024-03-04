@@ -7,34 +7,19 @@
      <meta charset="UTF-8">
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <title>User Profile</title>
+     
      <link rel="stylesheet" href="UserSettings.css">
  </head>
  <body>
      <header>
-         <div class="hamburger-menu" onclick="toggleMenu()">
-             <div class="bar"> Pages</div>
-         </div>
-         <h1 id="headerTitle"></h1>
-         <div id="linksContainer">
-             <a href="building.html">Buildings</a>
-             <a href="Schedule.html">Schedule</a>
-         </div>    
-         
+        <h1 id="userData"></h1>
+        <nav class ="navlink">
+            <ul>
+                <li class="navlink"><a href="schedulling.html">Scheduling</a></li>
+                <li class="navlink"><a href="building.html">Buildings</a></li>
+            </ul>
+        </nav>
          <script>
-             function toggleMenu() {
-                 var headerTitle = document.getElementById('headerTitle');
-                 var linksContainer = document.getElementById('linksContainer');
-                 
-         
-                 if (headerTitle.style.display === 'none') {
-                     headerTitle.style.display = 'block';
-                     linksContainer.style.display = 'none';
-                 } else {
-                     headerTitle.style.display = 'none';
-                     linksContainer.style.display = 'flex';
-                 }
-             }
- 
               // Make an HTTP request to retrieve user data
               fetch('/userData')
                  .then(response => {
@@ -52,34 +37,50 @@
                  })
                  .catch(error => console.error('Error:', error));
  
-         </script>
+        </script>
+            <button onclick ="logout()" id ="logout">Log out</button>
+        <Script>
+            function logout () {
+                fetch('/logout')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to logout');
+                        }
+                    // Redirect to login page after logout
+                        window.location.href = '/';
+                    })
+                .catch(error => {
+                   console.error('Error:', error);
+                });
+             }
+            </SCript>
      </header>
      
      <main>
          <section>
-             <h2>User Information</h2>
-             <div id="userInfo"></div>
-         
-             <h2>Update Email</h2>
-             <form id="updateEmailForm" action="/updateEmail" method="POST">
-                 <label for="email">New Email:</label>
-                 <input type="email" id="email" name="email" required>
-                 <button type="submit">Update Email</button>
-             </form>
+            <!-- Displays the user info Username, First and last name, and Email -->
+            <h2>User Information</h2>
+            <div id="userInfo"></div>
+            
+            <!-- Pushes submitted email to the database. -->
+            <h2>Update Email</h2>
+            <form id="updateEmailForm" action="/updateEmail" method="POST">
+                <label for="email">New Email:</label>
+                <input type="email" id="email" name="email" required>
+                <button type="submit">Update Email</button>
+            </form>
  
-             <h2>Update Password</h2>
-             <form id="updatePasswordForm" action="/updatePassword" method="POST">  
-                 <div>
-                     <label for="password">New Password:</label>
-                     <input type="password" id="password" name="password" required>
-                     <button type="submit">Update Password</button>
-                 </div>
-             </form>
-         </section>
-     </main>
-     <script>
-        
-     </script>
+            <!-- Pushes submitted password to the database -->
+            <h2>Update Password</h2>
+            <form id="updatePasswordForm" action="/updatePassword" method="POST">  
+                <div>
+                    <label for="password">New Password:</label>
+                    <input type="password" id="password" name="password" required>
+                    <button type="submit">Update Password</button>
+                </div>
+            </form>
+        </section>
+    </main>
  </body>
  </html>
  
