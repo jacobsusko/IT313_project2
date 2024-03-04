@@ -14,12 +14,12 @@
         <div class="hamburger-menu" onclick="toggleMenu()">
             <div class="bar"> Pages</div>
         </div>
-        <h1 id="headerTitle">User Profile</h1>
+        <h1 id="headerTitle"></h1>
         <div id="linksContainer">
             <a href="building.html">Buildings</a>
             <a href="Schedule.html">Schedule</a>
         </div>    
-
+        
         <script>
             function toggleMenu() {
                 var headerTitle = document.getElementById('headerTitle');
@@ -33,6 +33,19 @@
                     linksContainer.style.display = 'flex';
                 }
             }
+
+             // Make an HTTP request to retrieve user data
+             fetch('/headerTitle')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to retrieve user data');
+                    }
+                    return response.json();
+                })
+                .then(userData => {
+                    document.getElementById('headerTitle').innerHTML = `${userData.first_name}'s Profile`;
+                })
+                .catch(error => console.error('Error:', error));
         </script>
     </header>
     
@@ -59,63 +72,26 @@
         </section>
     </main>
     <script>
-
-        // Implement calls to database to grab the following information.
-        function fetchUserData() {
+        async function grabAndDisplayUserSettings() {
+            // for demo
+            const username = "A";
+            const first_name = "A";
+            const last_name = "A";
+            const email = "A";
             
-            // For demo
-            const userData = {
-                username: "demo_user",
-                firstName: "Austin",
-                lastName: "Hodgkiss",
-                email: "john.doe@example.com",
-                password: "********"
-            };
-            return userData;
-        }
-         
-        // Function to update email
-        // function updateEmail(email) {
-        
-        // }
+            // implement when route is working
 
-        // Function to update password
-        // function updatePassword(password) {
-           
-        // }
+            // const username = await fetch(userData.Username);
+            // const first_name = await fetch(userData.first_name);
+            // const last_name = await fetch(userData.last_name);
+            // const email = await fetch(userData.email);
 
-        // Function to populate user information on the page
-        function populateUserInfo(user) {
-            document.getElementById('userInfo').innerHTML = `
-                <p><strong>Username:</strong> ${user.username}</p>
-                <p><strong>Name:</strong> ${user.firstName} ${user.lastName}</p>
-                <p><strong>Email:</strong> ${user.email}</p>
-                <p><strong>Password:</strong> ${user.password}</p>
-            `;
-            document.getElementById('email').value = user.email;
-            document.getElementById('password').value = ""; // For security reasons, clear the password field
+            document.getElementById('userInfo').innerHTML = "Username: " + username + "<br>"; 
+            document.getElementById('userInfo').innerHTML = userInfo.innerHTML + "Name: " + first_name + " " + last_name + "<br>";
+            document.getElementById('userInfo').innerHTML = userInfo.innerHTML + "Email: " + email + "<br>";
         }
 
-        // Fetch user data and populate the page when it's loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            const userData = fetchUserData();
-            populateUserInfo(userData);
-        });
-
-        // Update email when the email form is submitted
-        document.getElementById('updateEmailForm').addEventListener('submit', (event) => {
-            event.preventDefault(); 
-            const email = document.getElementById('email').value;
-            updateEmail(email);
-        });
-
-        // Update password when the password form is submitted
-        document.getElementById('updatePasswordForm').addEventListener('submit', (event) => {
-            event.preventDefault(); 
-            const password = document.getElementById('password').value;
-            updatePassword(password);
-        });
-
+        window.addEventListener('load', grabAndDisplayUserSettings);
     </script>
 </body>
 </html>
