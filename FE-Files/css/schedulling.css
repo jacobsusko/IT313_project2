@@ -1,14 +1,19 @@
 /* Done by Holly M */
 
 button {
-    border: solid 3px;
-    padding: 2%;
-    width: 500px;
+    display: flex;
+    justify-content: center;
+    text-decoration: none;
+    border: none;
+    border: solid 2px;
+    border-radius: 2%;
+    padding: 1%;
+    margin: 3%;
+    width: 400px;
     color: black;
     background-color: #CBB677;
     text-decoration: none;
     font-size: larger;
     display: flex;
     font-family: 'Times New Roman', Times, serif;
-    border-radius: 2%;
 }
