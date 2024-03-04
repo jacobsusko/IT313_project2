@@ -13,8 +13,8 @@
         <h1 id="userData"></h1>
         <nav class ="navlink">
             <ul>
-                <li class="navlink"><a href="schedulling.html">Scheduling</a></li>
-                <li class="navlink"><a href=" ">Settings</a></li>
+                <li class="navlink" id="schedule"><a href="schedulling.html">Scheduling</a></li>
+                <li class="navlink" id="settings"><a href="UserSettings.html">Settings</a></li>
             </ul>
         </nav>
         <script>
@@ -67,7 +67,7 @@
         }
 
         async function fetchRoomOccupancy(parameter) {
-            let index = 0;
+            // let index = 0;
             try {
                 const roomList = document.getElementById('roomList');
                 roomList.innerText ='';
@@ -100,20 +100,26 @@
                 if(credentials.loggedInEmp){
                     cell1.innerHTML = `
                         <form action="/updateRoom" method="POST">
-                            <input type="hidden" name="hallName_${index}" value="${room.hall_name}">
-                            <input type="hidden" name="roomNum_${index}" value="${room.room_num}">
+                            <input type="hidden" name="hallName" value="${room.hall_name}">
+                            <input type="hidden" name="roomNum" value="${room.room_num}">
                             <button class='roomButton' onclick="">Update Occupancy</button>
+                        </form>
+                        <form action="/resetFlag" method="POST">
+                            <input type="hidden" name="hallName" value="${room.hall_name}">
+                            <input type="hidden" name="roomNum" value="${room.room_num}">
+                            <button class='roomButton' onclick="">Reset Flag</button>
                         </form>
                     `;
                 } else {
                     cell1.innerHTML = `
                         <form action="/updateFlag" method="POST">
-                            <input type="hidden" name="hallName_${index}" value="${room.hall_name}">
-                            <input type="hidden" name="roomNum_${index}" value="${room.room_num}">
-                            <button class='roomButton' onclick="">Update Flag</button>
+                            <input type="hidden" name="hallName" value="${room.hall_name}">
+                            <input type="hidden" name="roomNum" value="${room.room_num}">
+                            <button class='roomButton flagButton' onclick="">Update Flag</button>
                         </form>
                     `;
                 }
+                cell1.classList.add("forms");
                 row.appendChild(cell1);
                 table.appendChild(row);
             });
@@ -122,11 +128,23 @@
                 // Handle errors if any
                 console.error('Error fetching room occupancy:', error);
             }
-            index++;
+            // index++;
 }
 
         // Call the function to fetch halls and display them as buttons when the HTML is loaded
         window.addEventListener('load', fetchHallsAndDisplay);
+    </script>
+    <script>
+        async function hidePages(){
+            const credentials = await getCredentials();
+            if(credentials.loggedInEmp){
+                var schedule = document.getElementById('schedule');
+                schedule.style.display = 'none';
+
+            }
+
+        }
+        window.addEventListener('load', hidePages);
     </script>
 
     <script>

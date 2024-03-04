@@ -68,7 +68,7 @@ th, td {
     padding: 12px;
     text-align: center;
     font-size: 2.5vh;
-    width: 16vw;
+    width: 12vw;
     color: #450084;
     
 }
@@ -96,10 +96,20 @@ main{
 .roomButton{
     background-color: #450084;
     color: white;
-    width: 8vw;
+    width: 12vw;
     border-radius: 5px;
-    margin: 0 4vw;
+    margin: 0 2vw;
     display: block;
+}
+.flagButton{
+    width: 12vw;
+    border-radius: 5px;
+}
+.forms{
+    display: flex;
+    flex-direction: row;
+    width: 32vw;
+    margin-left: 10vw;
 }
 
 
