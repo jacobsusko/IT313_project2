@@ -1,16 +1,14 @@
-/* Holly M */
+/* Done by Holly M */
 
-#roomList {
+button {
     border: solid 3px;
-    padding: 3%;
-    width: 300px;
-    color: white;
-    background-color: #450084;
+    padding: 2%;
+    width: 500px;
+    color: black;
+    background-color: #CBB677;
     text-decoration: none;
-    color: white;
     font-size: larger;
     display: flex;
     font-family: 'Times New Roman', Times, serif;
     border-radius: 2%;
-
 }
