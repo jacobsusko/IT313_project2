@@ -1,9 +1,22 @@
 const express = require('express')
-const http = require('http')
+const https = require('https')
+const http = require('http');
+const fs = require('fs');
 const app = express()
 const { Client} = require('pg');
+const { nextTick } = require('process');
 const port = 7304
 
+const properToken = 'pQrz7Yr3gX'
+
+// Not sure if own SSL is required separate from one already obtained since it is a different node.js server 
+
+// Create HTTPS server
+// const server = https.createServer({
+//   key: fs.readFileSync('/home/ec2-user/node-website/privkey.pem'),
+//   cert: fs.readFileSync('/home/ec2-user/node-website/fullchain.pem'),
+//   passphrase: 'C3n7r@1^73@NN'
+// }, app);
 
 const client = new Client({
     user: 'postgres',
@@ -20,55 +33,46 @@ client.connect()
 
 app.use(express.json());
 
+// Authentication Middleware using API Keys
+const authenticate = (req, res, next) => {
+  const authToken = req.headers['apikey'];
 
-// API Post Function to Post to Database
-app.post('/room_occupancy', async (req, res) => {
-    const { hall, room, occupancy } = req.body;
-    console.log(req.body);
-    if (!hall || !room || !occupancy) {
-        return res.status(400).send('Missing data')
-    }
-
-try {
-    // try to send data to the database
-    const query = `INSERT INTO Study_Room (hall, room, occupancy)
-    VALUES ($1, $2, $3)
-    RETURNING id;
-    `;
-    const values = [hall, room, occupancy];
-
-    const result = await Client.query(query, values);
-    res.status(201).send({message: ''})
-
-} catch (eer) {
-    console.error(err);
-    res.status(500).send('error occured');
+  if (!authToken || authToken !== properToken) {
+    console.log(authToken);
+    return res.status(401).send('Unauthorized');
+  }
+  next();
 }
 
-})
-
+// id = room_num
 // Figure out how to adjust and edit to fit
 // API to Put New Data into Database
-app.put('/room_occupancy', async (req, res) => {
-    const id = parseInt(req.params.id)
-    const { name, email } = req.body
+app.put('/room_occupancy/:hall/:room', authenticate, async (req, res) => {
+    const { hall, room } = req.params;
+    const { occupancy } = req.body
   
-    client.query(
-      'UPDATE users SET name = $1, email = $2 WHERE id = $3',
-      [, email, id],
-      (error, res) => {
-        if (error) {
-          throw error
-        }
-        response.status(200).send(`User modified with ID: ${id}`)
-      })
-})
+    try {
+      const id =  `${hall}_${room}`;
+
+      const query = `
+        UPDATE occupancy."Study_Room"
+        SET occupied = $1
+        WHERE hall_name = $2 AND room_num = $3
+        `;
+      const values = [occupancy, hall, parseInt(room)];
+      await client.query(query, values);
+      res.status(200).send('Success');
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('fail');
+    }
+});
 
 
 // GET for testing
-app.get('/room_occupancy', async (req, res) => {
+app.get('/room_occupancy', authenticate, async (req, res) => {
   try {
-    const query = 'SELECT * FROM Study_Room;';
+    const query = 'SELECT * FROM occupancy."Study_Room"';
     const { rows } = await client.query(query);
     res.status(200).json(rows);
   } catch (err) {
