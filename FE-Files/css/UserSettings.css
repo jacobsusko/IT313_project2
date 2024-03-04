@@ -72,6 +72,7 @@ header {
     font-size: 34px; 
     margin-right: 20px;
     margin-left: 10px;
+    text-decoration: none;
 }
 
 #linksContainer a:last-child {
@@ -86,7 +87,9 @@ header {
     color: #450084;
     font-weight: bold;
     padding-right: 3px;
+    padding-left: 3px;
     background-color: #CBB677;
+    border-radius: 10%;
     transition: all 0.3s ease;
 }
 
