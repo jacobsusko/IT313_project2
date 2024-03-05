@@ -1,12 +1,13 @@
+// Created by: David
 const { Client, path } = require('./modules');
 
 async function login(req, res) {
     const client = new Client({
-        user: 'postgres',
+        user: 'centralteam',
         host: 'localhost',
-        database: 'room_occupancy',
+        database: 'occupancy',
         password: 'C3n7r@1^73@NN',
-        port: 5432,
+        port: 3254,
     });
 
     try {
@@ -14,35 +15,56 @@ async function login(req, res) {
         const username = req.body.username;
         const password = req.body.password;
 
-        const result = await client.query(`
+        // Query the Student table
+        let result = await client.query(`
             SELECT *
             FROM occupancy."Student"
+            WHERE username = $1 AND password = $2;
+        `, [username, password]);
+
+        if (result.rows.length > 0) {
+            // console.log('Student Found');
+            await client.end();
+            req.session.loggedIn = true;
+            req.session.username = username;
+            req.session.password = password;
+            return res.redirect('/building.html'); // Return to exit function
+        }
+
+        // If not found in Student, check Employee table
+        result = await client.query(`
+            SELECT *
+            FROM occupancy."Employee"
             WHERE username = $1 AND password = $2;
         `, [username, password]);
 
         await client.end();
 
         if (result.rows.length > 0) {
-            req.session.loggedIn = true;
+            // console.log('Employee Found');
+            req.session.loggedInEmp = true;
             req.session.username = username;
             req.session.password = password;
-            res.redirect('/building.html')
-        } else {
-            res.send("<div align='center'><h2>Invalid Username or password</h2></div><br><br><div align='center'><a href='./index.html'>login again<a><div>");
+            return res.redirect('/building.html'); // Return to exit function
         }
+
+        // If not found in either table, return invalid message
+        return res.send("<div align='center'><h2>Invalid Username or password</h2></div><br><br><div align='center'><a href='./index.html'>login again<a><div>");
+
     } catch (err) {
         console.error('Error executing query', err);
-        res.send("Internal server error");
+        return res.send("Internal server error");
     }
 }
 
+// Author: Teo, with assistance from David
 async function signup(req, res) {
     const client = new Client({
-        user: 'postgres',
+        user: 'centralteam',
         host: 'localhost',
-        database: 'room_occupancy',
+        database: 'occupancy',
         password: 'C3n7r@1^73@NN',
-        port: 5432,
+        port: 3254,
     });
 
     try {
@@ -102,17 +124,35 @@ function logout(req, res) {
 // Modify requireLogin middleware to check if user is logged in
 function requireLogin(req, res, next) {
     if (req.session && req.session.loggedIn) {
-        console.log(req.session);
-        console.log(req.session.loggedIn);
         next(); // Proceed to the next middleware if user is logged in
+    } else {
+        res.status(200).send("You are not logged in as a Student.<br><div align='center'><a href='./building.html'>Building Page<a><div>");
+
+    }
+}
+function requireLoginEmp(req, res, next) {
+    if (req.session && req.session.loggedInEmp) {
+        next(); // Proceed to the next middleware if user is logged in
+    } else {
+        res.status(200).send("You are not logged in as an Employee.<br><div align='center'><a href='./building.html'>Building Page<a><div>");
+    }
+}
+
+// Custom middleware function to check for either requireLogin or requireLoginEmp
+const requireEitherLogin = (req, res, next) => {
+    if (req.session && (req.session.loggedIn || req.session.loggedInEmp)) {
+        // User is authenticated as either a regular user or an employee
+        next();
     } else {
         res.redirect('/'); // Redirect to the login page if user is not logged in
     }
-}
+};
 
 module.exports = {
     login,
     signup,
     logout,
-    requireLogin
+    requireLogin,
+    requireLoginEmp,
+    requireEitherLogin
 };
