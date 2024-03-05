@@ -1,19 +1,85 @@
-/* Done by Holly M */
+/*!
+ * Holly M.
+ */
+ *{ 
+    box-sizing: border-box;
+ }
 
-button {
-    display: flex;
-    justify-content: center;
-    text-decoration: none;
+ button{
     border: none;
-    border: solid 2px;
     border-radius: 2%;
-    padding: 1%;
-    margin: 3%;
-    width: 400px;
-    color: black;
-    background-color: #CBB677;
+    margin: 0;
+    padding: 1vh;
+    background: none;
+    width: 10vw;
     text-decoration: none;
-    font-size: larger;
+    color: #450084;
+    font-size: 2vh;
     display: flex;
     font-family: 'Times New Roman', Times, serif;
+    cursor: pointer;
+    text-align: center;
+   
 }
+
+div button{
+    height: 6vh;
+    padding: 0;
+    padding-left: 1vh;
+    vertical-align: middle;
+    padding-top: 1vh;
+    position: relative;
+    right: 78vh;
+    
+}
+
+div button:hover{
+    border: #450084 solid 2px;
+}
+
+#logout{
+    padding: 1vh;
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: medium;
+    width: auto;
+    margin: 0;
+    margin-right: 1vw;
+}
+#logout:hover{
+    opacity: 0.75;
+}
+h1{
+    flex-grow: 1;
+    margin: 1vw;
+}
+header {
+    align-items: center;
+    border: none;
+}
+.time-slot-button {
+    padding: 10px;
+    margin: 5px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #450084;
+    color: #fff;
+    position: relative;
+    right: 50vh;
+    bottom: 17vh;
+}
+
+.time-slot-button:hover {
+    background-color: rgb(202, 132, 202);
+}
+
+
+ 
+
+
+
