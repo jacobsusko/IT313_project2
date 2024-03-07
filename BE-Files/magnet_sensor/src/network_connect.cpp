@@ -1,11 +1,16 @@
 #include <WiFi.h>
+#include <Arduino.h>
+//Author: Rafael Margary
+// This file will allow ESP-32 to connect to RPi via wifi
+// The LED will turn on if a connection is established
+// This code has been exercised
+const char* ssid = "";
+const char* password = "checkout3";
+const int LED = 5;
 
-const char* ssid = "IT313-Study";
-const char* password = "checkout2";
-#define LED 2
 void setup(){
-    pinMode(LED, OUTPUT);
-    digitalWrite(LED, HIGH);
+    pinMode (LED, OUTPUT);
+
     Serial.begin(9600);
 
     while(Serial.available());
@@ -15,9 +20,9 @@ void setup(){
     Serial.println("\nConnecting");
 
     while(WiFi.status() != WL_CONNECTED){
+        digitalWrite(LED, LOW);
         Serial.print(".");
         delay(100);
-        digitalWrite(LED, HIGH);
     }
 
     Serial.println("\nConnected to the WiFi network");
@@ -28,5 +33,5 @@ void setup(){
 }
 
 void loop(){
-    digitalWrite(LED, HIGH);
+
 }
