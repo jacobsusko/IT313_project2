@@ -15,18 +15,6 @@ main {
     align-items: center;
     margin: 0;
     }
-section, div{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border: 2px solid;
-    border-radius: 2%;
-    margin: 2%;
-    padding: 2%;
-    background-color: #dfd2aa;
-    width: 600px;
-    height: 50vh;
-    }
 header {
     color: white;
     background-color: #450084;

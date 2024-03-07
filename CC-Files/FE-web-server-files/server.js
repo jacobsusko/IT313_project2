@@ -1,3 +1,4 @@
+// Created by: David
 const {express, https, http, fs, path, bodyParser, session,
     Client, pgSession} = require('./server-files/modules'); //import all modules from module.js
 const routes = require('./server-files/routes');
@@ -22,7 +23,7 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-    if (req.secure && req.hostname === '3.140.186.69') {
+    if (req.secure && req.hostname === '3.128.186.180') {
         const expectedHostname = 'www.jmustudyhall.com';
         res.redirect('https://' + expectedHostname + req.url);
     } else {

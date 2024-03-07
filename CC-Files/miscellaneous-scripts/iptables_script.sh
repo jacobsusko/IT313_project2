@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: David, assistance from https://javapipe.com/blog/iptables-ddos-protection/
 # Block all packets that are not a syn and don't belong on an established TCP connection
 iptables -t mangle -A PREROUTING -p tcp --dport 80 -m conntrack --ctstate INVALID -j DROP
 iptables -t mangle -A PREROUTING -p tcp --dport 443 -m conntrack --ctstate INVALID -j DROP

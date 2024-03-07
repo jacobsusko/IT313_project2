@@ -1,48 +1,156 @@
 <!-- 
     Holly M.
  -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="Holly M" content="width=device-width, initial-scale=1.0">
-    <title>Schedulling Page</title>
-    <link href="schedulling.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
-</head>
-<body>
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="Holly M" content="width=device-width, initial-scale=1.0">
+     <title>Schedulling Page</title>
+     <link href="schedulling.css" rel="stylesheet">
+     <link href="style.css" rel="stylesheet">
+     
+ </head>
+ <body>
+ 
+     <header>
+         <h1>Schedule a Room</h1>
+         <nav class ="navlink">
+            <ul>
+                <li class="navlink" id="building"><a href="building.html">Buildings</a></li>
+                <li class="navlink" id="settings"><a href="UserSettings.html">Settings</a></li>
+            </ul>
+        </nav>
+         
+        <button onclick ="logout()" id ="logout">Log out</button>
+     </header>
+     <main>
+ 
+     <div id="hallList">
+         
+     </div>
+     <table id="roomList"></table>
 
-    <header>
-        <h1>Schedule a Room</h1>
-    </header>
+    </main>
+     <script>
+         // Function to fetch hall names from the server and display them as buttons
+         async function fetchHallsAndDisplay() {
+             const response = await fetch('/halls');
+             const halls = await response.json();
+ 
+             const roomListDiv = document.getElementById('hallList');
+             roomListDiv.innerHTML = ''; // Clear previous content
+ 
+             halls.forEach(hall => {
+                 const hallButton = document.createElement('button');
+                 hallButton.textContent = hall;
+                 hallButton.id = hall; // Set the id attribute to the hall name
+                 hallButton.addEventListener('click', () => {
+                     // Handle button click (you can add your logic here)
+                     console.log('Clicked on hall:', hall);
+                 });
+                 roomListDiv.appendChild(hallButton);
+             });
+         }
+ 
+         // Call the function to fetch halls and display them as buttons when the HTML is loaded
+         window.addEventListener('load', fetchHallsAndDisplay);
+     </script>
+<div class="container">
+<script>
 
-    <div id="roomList">
+    // Function to handle button click
+    function handleButtonClick(timeSlot) {
+        alert('You clicked: ' + timeSlot);
+    }
+
+    // Array of time slots
+    var myTableRows = ["8:00 - 10:00 AM", "10:00 - 12:00 PM", "12:00 - 2:00 PM",
+        "2:00 - 4:00 PM", "4:00 - 6:00 PM", "6:00 - 8:00 PM"];
+
+    // Create buttons for each time slot
+    myTableRows.forEach(function (timeSlot) {
+        var button = document.createElement("button");
+        button.innerHTML = timeSlot;
+        button.className = "time-slot-button"; 
+        button.onclick = function () {
+            handleButtonClick(timeSlot);
+        };
+        document.body.appendChild(button);
+    });
+
+
         
-    </div>
-    <script>
-        // Function to fetch hall names from the server and display them as buttons
-        async function fetchHallsAndDisplay() {
-            const response = await fetch('/halls');
-            const halls = await response.json();
+async function fetchTimeSlots(parameter) {
+    try {
+        const timeSlotTable = document.getElementById('roomList');
+        timeSlotTable.innerText = '';
 
-            const hallListDiv = document.getElementById('roomList');
-            hallListDiv.innerHTML = ''; // Clear previous content
+        const timeSlotsResponse = await fetch(`/getTimeSlots?hall_name=${parameter}`);
+        const timeSlots = await timeSlotsResponse.json();
+        console.log('Time Slots for hall:', timeSlots);
 
-            halls.forEach(hall => {
-                const hallButton = document.createElement('button');
-                hallButton.textContent = hall;
-                hallButton.id = hall; // Set the id attribute to the hall name
-                hallButton.addEventListener('click', () => {
-                    // Handle button click (you can add your logic here)
-                    console.log('Clicked on hall:', hall);
-                });
-                hallListDiv.appendChild(hallButton);
+        const table = document.getElementById('roomList');
+        const headerRow = document.createElement('tr');
+        const headers = ['Hall', 'Room', 'Time Slot', 'Action'];
+        headers.forEach(headerText => {
+            const headerCell = document.createElement('th');
+            headerCell.textContent = headerText;
+            headerRow.appendChild(headerCell);
+        });
+        table.appendChild(headerRow);
+
+        const credentials = await getCredentials();
+
+        timeSlots.forEach(timeSlot => {
+            const row = document.createElement('tr');
+
+            const columns = [timeSlot.hall_name, timeSlot.room_num, timeSlot.time_slot];
+            columns.forEach(columnText => {
+                const cell = document.createElement('td');
+                cell.innerHTML = columnText;
+                row.appendChild(cell);
             });
-        }
 
-        // Call the function to fetch halls and display them as buttons when the HTML is loaded
-        window.addEventListener('load', fetchHallsAndDisplay);
+            let cell1 = document.createElement('td');
+            if (credentials.loggedInEmp) {
+                cell1.innerHTML = `
+                    <form action="/reserveTimeSlot" method="POST">
+                        <input type="hidden" name="hallName" value="${timeSlot.hall_name}">
+                        <input type="hidden" name="roomNum" value="${timeSlot.room_num}">
+                        <input type="hidden" name="timeSlot" value="${timeSlot.time_slot}">
+                        <button class='roomButton' onclick="">Reserve</button>
+                    </form>
+                `;
+            }
+            cell1.classList.add("forms");
+            row.appendChild(cell1);
+            table.appendChild(row);
+        });
+
+    } catch (error) {
+        console.error('Error fetching time slots:', error);
+    }
+}
+
+</script>
+</div>
+
+<script>
+    function logout () {
+        fetch('/logout')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to logout');
+                }
+                // Redirect to login page after logout
+                window.location.href = '/';
+            })
+            .catch(error => {
+                   console.error('Error:', error);
+            });
+    }
     </script>
-   
-</body>
-</html>
+
+ </body>
+ </html>
