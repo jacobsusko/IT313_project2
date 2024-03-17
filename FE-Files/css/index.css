@@ -1,6 +1,22 @@
 /*!
  * Robbie and Teo
  */
+ body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #CBB677;
+    }
+    
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    }
+    
+    
 #login{
     display: flex;
     flex-direction: column;
@@ -30,3 +46,31 @@ header {
     justify-content: center;
         
 }
+/* Media query for phone view */
+@media only screen and (max-width: 1000px) {
+   section, div{
+    background-color: #dfd2aa;
+    font-size: 2.2em;
+    width: 80vw;
+    height: 50vw;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    top: 20vh;
+   }
+   header{
+    font-size: x-large;
+    height: auto;
+   }
+   input, #login{
+    font-size: 0.8em;
+    width: 300px;
+   }
+   p{
+    font-size: 1.2em;
+   }
+
+
+  }
