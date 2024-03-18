@@ -13,7 +13,7 @@
     width: 10vw;
     text-decoration: none;
     color: #450084;
-    font-size: 2vh;
+    font-size: 3vh;
     display: flex;
     font-family: 'Times New Roman', Times, serif;
     cursor: pointer;
@@ -24,7 +24,6 @@ div button{
     height: 6vh;
     padding: 0;
     padding-left: 1vh;
-    vertical-align: middle;
     padding-top: 1vh;
 }
 
@@ -54,6 +53,8 @@ h1{
 header {
     align-items: center;
     border: none;
+    height: auto;
+    font-size: large;
 }
 table {
     width: 80vw;
@@ -92,6 +93,7 @@ main{
     width: auto;
     height: 90vh;
     align-self: flex-start;
+    background-color: #dfd2aa;
 }
 .roomButton{
     background-color: #450084;
@@ -110,6 +112,44 @@ main{
     flex-direction: row;
     width: 32vw;
     margin-left: 10vw;
+}
+@media (orientation:portrait) {
+    body{
+        width: 100vw;
+        height: auto;
+    }
+    main {
+        flex-direction: column;
+    }
+    #hallList {
+        height: 33vh;
+        width: 100vw;
+    }
+    #roomList {
+        width: 100vw;
+    }
+    th, td {
+        height: 7vh;
+        width: 1vw;
+        font-size: 3vw;
+    }
+    tr {
+        height: 7vh;
+    }
+    .forms {
+        flex-direction: column;
+    }
+    .flagButton{
+        height: 4vh;
+        width: 26vw;
+        display: flex;
+        position: relative;
+        top: 120px;
+        font-size: 2vh;
+    }
+
+
+    
 }
 
 
