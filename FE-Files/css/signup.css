@@ -36,6 +36,8 @@ header {
   bottom: 5%;
   right: 2%;
   font-size: small;
+
+  
   
 }
 section, div{
@@ -50,3 +52,33 @@ section, div{
   width: 600px;
   height: 50vh;
 }
+@media only screen and (max-width: 1000px) {
+  section, div{
+   background-color: #dfd2aa;
+   font-size: 2.2em;
+   width: 80vw;
+   height: 70vw;
+   text-align: center;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   position: relative;
+   top: 20vh;
+  }
+  header{
+   font-size: x-large;
+   height: auto;
+  }
+  input, #login{
+   font-size: 0.9em;
+   width: 300px;
+
+  }
+  p{
+   font-size: 1.2em;
+  }
+  form{
+    display: flex;
+    align-items: center;
+  }
+ }
