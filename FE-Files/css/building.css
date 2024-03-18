@@ -146,9 +146,18 @@ main{
         position: relative;
         top: 120px;
         font-size: 2vh;
+        justify-content: center;
     }
-
-
+    .roomButton{
+        height: 4vh;
+        width: 26vw;
+        display: flex;
+        position: relative;
+        top: 120px;
+        font-size: 1.5vh;
+        margin: 1vh;
+        align-items: center;
+    }
     
 }
 
