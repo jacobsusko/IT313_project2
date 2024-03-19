@@ -4,7 +4,7 @@
 // GND         | GND           
 // D21         | SDA          
 // D22         | SCL           
-
+//
 #include <WiFi.h>
 #include <Arduino.h>
 #include <SPI.h>
@@ -120,7 +120,7 @@ void sendAMGImage() {
 }
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial.println("Booting");
   Serial.println(F("Connecting to Wifi"));
   WiFi.mode(WIFI_STA);
