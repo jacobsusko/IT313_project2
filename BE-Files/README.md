@@ -1,2 +1,7 @@
 # Backend Portion of the Study Room Tracker
-![[ESP32-Pinout-1.jpg]]
+## Pin diagram for ESP32 Board
+![[Pin Diagram for ESP32 board]](ESP32-Pinout-1.jpg)
+## Separated into different folders
+- ESP32 folder is for scripts/config files for PlatformIO extension on ESP32 board
+  - src folder has scripts
+  - everything else is config
