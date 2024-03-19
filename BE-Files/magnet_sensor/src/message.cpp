@@ -33,18 +33,16 @@ const char* password = "checkout2";
 const char* mqtt_server = "192.168.25.10"; 
 const char* mqtt_user = "Backend";
 const char* mqtt_password = "Bestend";
-const char* clientID = "thermal";
+const char* clientID = "MQTTBE";
 const char* topicStatus = "/thermal/status";
 const char* topicBME = "/thermal/bme";
-const char* topicThermal = "/thermal/thermal";
+const char* topicThermal = "platypush_bus_mq/it313";
 
 WiFiClient espClient;
 PubSubClient mqtt(mqtt_server, 1883, 0, espClient);
 
 unsigned long endTime, uptime, lastStatus, lastAMG;
 int  vSTATUSINTERVAL, vAMGSAMPLING;
-
-
 
 // MQTT reconnect logic
 void reconnect() {
