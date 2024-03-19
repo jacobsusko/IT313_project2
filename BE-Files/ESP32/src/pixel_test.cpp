@@ -53,7 +53,8 @@ void loop() {
 
     Serial.print("[");
     for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
-      Serial.print(pixels[i-1]);
+      float fahrenheit = (pixels[i-1] * 9.0) / 5.0 + 32;
+      Serial.print(fahrenheit);
       Serial.print(", ");
       if( i%8 == 0 ) Serial.println();
     }
