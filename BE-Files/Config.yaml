@@ -1,0 +1,29 @@
+Author: Rafael Margary
+#This is the config file for the Platypush server
+
+#Backend listens on 8008 by default
+backend.http:
+  port: 1250
+  enabled: True
+
+mqtt:
+  port: 1883
+  client_id: MQTTBE
+  username: Backend
+  password: Bestend
+
+
+backend.nodered:
+  port: 5051
+backend.github:
+  user: MagicRaffi
+  user_token: XXXXXXXXXXXXXXXXXXX
+#List of repos to monitor
+  repos:
+    - https://https://github.com/jacobsusko/IT313_project2.git
+
+#How often backend pulls from repo
+  poll_seconds: 180
+
+#Maximum events triggered by poll
+  max_events_per_scan: 10
