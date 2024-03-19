@@ -5,13 +5,6 @@
     box-sizing: border-box;
  }
 
- main {
-    flex-direction: row;
-    width: 100vw;
-    align-items: stretch;
-    background-color: #dfd2aa;
- }
-
  button{
     border: none;
     border-radius: 2%;
@@ -21,7 +14,7 @@
     width: 10vw;
     text-decoration: none;
     color: #450084;
-    font-size: 3vh;
+    font-size: 2vh;
     display: flex;
     font-family: 'Times New Roman', Times, serif;
     cursor: pointer;
@@ -35,6 +28,8 @@ div button{
     padding-left: 1vh;
     vertical-align: middle;
     padding-top: 1vh;
+    position: relative;
+    right: 78vh;
     
 }
 
@@ -64,69 +59,23 @@ h1{
 header {
     align-items: center;
     border: none;
-    font-size: 2vh;
 }
 .time-slot-button {
-    display: inline;
     padding: 10px;
     margin: 5px;
-    font-size: .75vw;
+    font-size: 16px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     background-color: #450084;
     color: #fff;
-    height: 5vh;
-    width: 10vw;
-    vertical-align:auto;
+    position: relative;
+    right: 50vh;
+    bottom: 17vh;
 }
 
 .time-slot-button:hover {
     background-color: rgb(202, 132, 202);
-}
-
-.room-button {
-    font-size: 2vh;
-    height: 3vh;
-    padding-bottom: 5vh;
-}
-
-.room-button:hover {
-    border: none;
-    text-decoration: underline;
-}
-
-#times {
-    display: flex;
-    flex-direction: column;
-}
-@media only screen and (max-width: 1000px) {
-    section, div{
-        width: 50vw;
-        min-height: 10vh;
-        height: auto;
-        padding: 0;
-        margin: 0;
-    }
-    .time-slot-button{
-       font-size: 2vh;
-       height: 5vh;
-       width:30vw;
-       display: flex;
-       flex-wrap: wrap;
-    }
-    #times{
-        font-size: 3vh;
-
-    }
-    header{
-        font-size: x-large;
-        height: auto;
-        width: 100vw;
-    }
-    #schedule{
-        font-size: 2vh;
-    }
 }
 
 
