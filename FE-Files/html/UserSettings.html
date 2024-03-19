@@ -15,8 +15,8 @@
         <h1 id="userData"></h1>
         <nav class ="navlink">
             <ul>
-                <li class="navlink"><a href="schedulling.html">Scheduling</a></li>
-                <li class="navlink"><a href="building.html">Buildings</a></li>
+                <li class="navlink" id="schedule"><a href="schedulling.html">Scheduling</a></li>
+                <li class="navlink" id ="building"><a href="building.html">Buildings</a></li>
             </ul>
         </nav>
          <script>
@@ -29,17 +29,42 @@
                      return response.json();
                  })
                  .then(userData => {
-                     document.getElementById('headerTitle').innerHTML = `${userData.first_name}'s Profile`;
-                     document.getElementById('userInfo').innerHTML = `Username: ${userData.username} <br>`; 
-                     document.getElementById('userInfo').innerHTML = userInfo.innerHTML + `Name: ${userData.first_name} ${userData.last_name} <br>`;
-                     document.getElementById('userInfo').innerHTML = userInfo.innerHTML + `Email: ${userData.email} <br>`;
+                     document.getElementById('userData').innerHTML = `${userData.first_name}'s Profile`;
+                     document.getElementById('userInfo').innerHTML = `<b>Username:</b> ${userData.username} <br>`; 
+                     document.getElementById('userInfo').innerHTML = userInfo.innerHTML + `<b>Name:</b> ${userData.first_name} ${userData.last_name} <br>`;
+                     document.getElementById('userInfo').innerHTML = userInfo.innerHTML + `<b>Email:</b> ${userData.email} <br>`;
+                     document.getElementById('userInfo').innerHTML = userInfo.innerHTML + `<label for="password"> <b>Password:</b> </label> <input type="password" id="password1" value=" ${userData.password}" readonly> 
+                                                                                            <div id="passwordContainer"> <br> <button type="button" onclick="showPassword()" id="passwordToggle">Show Password</button> </div>`;
                      
                  })
                  .catch(error => console.error('Error:', error));
- 
-        </script>
+                //  The script shows the by defualt hidden password.
+                 function showPassword() {
+                    var passwordField = document.getElementById("password1");
+                    var passwordToggle = document.getElementById("passwordToggle");
+                    
+                    if (passwordField.type === "password") {
+                        passwordField.type = "text";
+                        passwordToggle.textContent = "Hide Password";
+                    } else {
+                        passwordField.type = "password";
+                        passwordToggle.textContent = "Show Password";
+                    }
+                }        
+        async function hidePages(){
+            const credentials = await getCredentials();
+            if(credentials.loggedInEmp){
+                var schedule = document.getElementById('schedule');
+                schedule.style.display = 'none';
+
+            }
+        }
+        window.addEventListener('load', hidePages);
+    </script>
+       
             <button onclick ="logout()" id ="logout">Log out</button>
         <Script>
+            // The logout script same one as used on the buildings page.
             function logout () {
                 fetch('/logout')
                     .then(response => {
@@ -53,6 +78,8 @@
                    console.error('Error:', error);
                 });
              }
+
+             
             </SCript>
      </header>
      
@@ -60,7 +87,9 @@
          <section>
             <!-- Displays the user info Username, First and last name, and Email -->
             <h2>User Information</h2>
-            <div id="userInfo"></div>
+            <div id="userInfo">
+               
+            </div>
             
             <!-- Pushes submitted email to the database. -->
             <h2>Update Email</h2>
@@ -70,13 +99,13 @@
                 <button type="submit">Update Email</button>
             </form>
  
-            <!-- Pushes submitted password to the database -->
+            <!-- Pushes submitted password to the database, and logs out user -->
             <h2>Update Password</h2>
             <form id="updatePasswordForm" action="/updatePassword" method="POST">  
                 <div>
                     <label for="password">New Password:</label>
                     <input type="password" id="password" name="password" required>
-                    <button type="submit">Update Password</button>
+                    <button onclick="logout()" type="submit">Update Password</button>
                 </div>
             </form>
         </section>

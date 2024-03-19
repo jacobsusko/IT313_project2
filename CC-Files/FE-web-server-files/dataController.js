@@ -1,5 +1,5 @@
 // Created by: David
-const { Client, path } = require('./modules');
+const { Client, path} = require('./modules');
 
 async function getCredentials(req, res){
     const {loggedIn, loggedInEmp} = req.session;
@@ -139,7 +139,12 @@ async function updateRoom(req, res){
 
         await client.end();
 
-        res.status(200).send("Room occupancy updated successfully.<br><div align='center'><a href='./building.html'>Building Page<a><div>");
+        res.status(200).send(`
+        <script>
+            alert('Room occupancy updated successfully.');
+            window.location.href = './building.html';
+        </script>
+        `)
     } catch (error) {
         console.error('Error updating room:', error);
         res.status(500).send('Internal Server Error');
@@ -171,7 +176,12 @@ async function resetFlag(req, res){
 
         await client.end();
 
-        res.status(200).send("Flag reset successfully.<br><div align='center'><a href='./building.html'>Building Page<a><div>");
+        res.status(200).send(`
+        <script>
+            alert('Flag reset successfully.');
+            window.location.href = './building.html';
+        </script>
+    `)
     } catch (error) {
         console.error('Error updating room:', error);
         res.status(500).send('Internal Server Error');
@@ -203,7 +213,13 @@ async function updateFlag(req, res){
 
         await client.end();
 
-        res.status(200).send("Room flag updated successfully.<br><div align='center'><a href='./building.html'>Building Page<a><div>");
+        // res.status(200).send(".<br><div align='center'><a href='./building.html'>Building Page<a><div>");
+        res.status(200).send(`
+            <script>
+                alert('Room flag updated successfully.');
+                window.location.href = './building.html';
+            </script>
+        `);
     } catch (error) {
         console.error('Error updating room:', error);
         res.status(500).send('Internal Server Error');
@@ -232,11 +248,22 @@ async function updateEmail(req, res){
 
         await client.end();
 
-        res.status(200).send("email updated successfully.<br><div align='center'><a href='./UserSettings.html'>Settings Page<a><div>");
-    
+        
+        res.status(200).send(`
+            <script>
+                alert('Email updated successfully.');
+                window.location.href = './UserSettings.html';
+            </script>
+        `);
+   
     } catch (error) {
-        console.error('Error updating room:', error);
-        res.status(500).send('Internal Server Error');
+        console.error('Error updating email:', error);
+        res.status(200).send(`
+            <script>
+                alert('Error updating email');
+                window.location.href = './UserSettings.html';
+            </script>
+        `);
     }
 }
 
@@ -262,11 +289,60 @@ async function updatePassword(req, res){
 
         await client.end();
 
-        res.status(200).send("Password updated successfully.<br><div align='center'><a href='./UserSettings.html'>Settings Page<a><div>");
-    
+        res.status(200).send(`
+            <script>
+                alert('Password updated successfully.');
+                window.location.href = './UserSettings.html';
+            </script>
+        `);
+
     } catch (error) {
-        console.error('Error updating room:', error);
-        res.status(500).send('Internal Server Error');
+        console.error('Error updating password:', error);
+        res.status(200).send(`
+            <script>
+                alert('Error updating password.');
+                window.location.href = './UserSettings.html';
+            </script>
+        `);
+    }
+}
+
+async function scheduleRoom(req, res){
+    // Extract data from the request body
+    const { room_hall, room_num, scheduled_time } = req.body;
+    const username = req.session.username;
+
+    const client = new Client({
+        user: 'centralteam',
+        host: 'localhost',
+        database: 'occupancy',
+        password: 'C3n7r@1^73@NN',
+        port: 3254,
+    });
+
+    try {
+        await client.connect();
+
+        let query = 'SELECT * FROM occupancy."Schedule_Room" WHERE room_hall = $1 AND room_num = $2 AND scheduled_time = $3';
+        let params = [room_hall, room_num, scheduled_time];
+        const result = await client.query(query, params);
+
+        if (result.rows.length > 0) {
+            return res.status(400).json({ error: 'Time already scheduled' });
+        } else {
+            query = 'INSERT INTO occupancy."Schedule_Room" (username, scheduled_time, room_num, room_hall) VALUES ($1, $2, $3, $4)';
+            params = [username, scheduled_time, room_num, room_hall];
+            await client.query(query, params);
+
+            console.log('SUCCESS!')
+            // Return success response
+            return res.status(200).json({ message: 'Room scheduled successfully' });
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    } finally {
+        await client.end();
     }
 }
 
@@ -280,4 +356,5 @@ module.exports = {
     updateFlag,
     updateEmail,
     updatePassword,
+    scheduleRoom
 };

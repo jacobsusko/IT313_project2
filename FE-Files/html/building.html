@@ -16,6 +16,7 @@
         <h1 id="userData"></h1>
         <nav class ="navlink">
             <ul>
+                <li class="navlink" id="addEmp"><a href="newadmin.html">Add an Employee</a></li>
                 <li class="navlink" id="schedule"><a href="schedulling.html">Scheduling</a></li>
                 <li class="navlink" id="settings"><a href="UserSettings.html">Settings</a></li>
             </ul>
@@ -143,6 +144,11 @@
             if(credentials.loggedInEmp){
                 var schedule = document.getElementById('schedule');
                 schedule.style.display = 'none';
+
+            }
+            if(credentials.loggedIn){
+                var addEmp = document.getElementById('addEmp');
+                addEmp.style.display = 'none';
 
             }
 

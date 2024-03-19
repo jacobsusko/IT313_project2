@@ -121,8 +121,9 @@ section{
         height: 110vw;
     }
     header{
-     font-size: small;
-     height: auto;
+        font-size: x-small;
+        height: auto;
+        width: 100vw;
     }
  
    }
