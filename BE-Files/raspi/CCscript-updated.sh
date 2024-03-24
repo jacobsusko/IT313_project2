@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 # Author: May
@@ -51,9 +52,21 @@ case "$esp32_ip" in
         ;;
 esac
 
-# Read the occupancy value from the file on Raspberry Pi
-occupancy_file="/path/to/occupancy_file.txt"
-occupancy_value=$(cat "$occupancy_file")
+# Read the occupancy value from the respective file on Raspberry Pi
+occupancy_file="/path/to/occupancy_${hall}_${room}.txt" 
+if [ -f "$occupancy_file" ]; then   # If the file exists and is a regular .txt file, 
+    occupancy_value=$(cat "$occupancy_file")    # Then the occumapncy_value will be read from the file specified and sent to the API and website.
+else
+    echo "Occupancy file not found for hall $hall room $room"  # If file does not exist, message is sent.
+    exit 1
+fi
+
+
+
+
+# -f flag in the condition checks whether the specified file exists.
+# If condition is met and file exists, the occupancy_value is read from the file.
+
 
 # Send data to the server
 curl -X PUT -H "Content-Type: application/json" -H "apikey: pQrz7Yr3gX" -d "{\"occupancy\": ${occupancy_value}}" https://3.128.186.180:7304/room_occupancy/${hall}/${room}
