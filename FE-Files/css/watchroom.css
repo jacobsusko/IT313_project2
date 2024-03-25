@@ -119,7 +119,7 @@ header {
     align-items: center;
     border: none;
     height: auto;
-    font-size: large;
+    font-size: larger;
     min-height: 10vh;
 }
 
