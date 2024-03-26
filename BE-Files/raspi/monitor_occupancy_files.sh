@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Author: May
-# This code has not been tested
+# This code has been tested
 
 # Use 'inotifywait'
 # This script will monitor changes to the occupancy files and trigger the main >
