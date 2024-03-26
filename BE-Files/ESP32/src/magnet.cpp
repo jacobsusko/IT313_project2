@@ -1,13 +1,17 @@
 // #include <Arduino.h>
 
-// int val = 0;  // variable to store hall sensor measurement
 // const int halPin = 19;
 // #define LED 2
 // int counter = 0;
 
+// boolean test_function(boolean test) {
+//     Serial.println("Working");
+//     return test;
+// }
+
 // void magnet_detect() {
 //     counter++;
-//     Serial.println("Detect");
+//     test_function(true);
 //     Serial.println(counter);
 // }
 
@@ -23,6 +27,5 @@
 // void loop() {  // Put your main code here to run repeatedly
 //     delay(1000);
 //     // digitalWrite(LED, LOW);
-//     int val = digitalRead(halPin);  // variable to store value of hall sensor
 
 // }
