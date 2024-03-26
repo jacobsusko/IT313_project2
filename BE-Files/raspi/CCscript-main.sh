@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Author: May
-# This code has not been tested
+# This code has been tested
 
 # Define hall and room based on the hall and room combination.
 case "$1" in
