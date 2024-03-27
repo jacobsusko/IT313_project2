@@ -9,6 +9,7 @@
     <title>Buildings</title>
     <link href="style.css" rel="stylesheet">
     <link href="building.css" rel="stylesheet">
+    <script src="building.js"></script>
 
 </head>
 <body>
@@ -16,26 +17,13 @@
         <h1 id="userData"></h1>
         <nav class ="navlink">
             <ul>
+                <li class="navlink" id="RoomEmail"><a href="watchroom.html">Notifications</a></li>
                 <li class="navlink" id="addEmp"><a href="newadmin.html">Add an Employee</a></li>
                 <li class="navlink" id="schedule"><a href="schedulling.html">Scheduling</a></li>
                 <li class="navlink" id="settings"><a href="UserSettings.html">Settings</a></li>
             </ul>
         </nav>
-        <script>
-            // Make an HTTP request to retrieve user data
-            fetch('/userData')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to retrieve user data');
-                    }
-                    return response.json();
-                })
-                .then(userData => {
-                    document.getElementById('userData').innerHTML = `Hello ${userData.first_name}!`;
-                    console.log(userData);
-                })
-                .catch(error => console.error('Error:', error));
-        </script>
+        
             <button onclick ="logout()" id ="logout">Log out</button>
 
             
@@ -48,143 +36,6 @@
     <table id="roomList"></table>
 </main>
 
-
-    <script>
-        // Function to fetch hall names from the server and display them as buttons
-        async function fetchHallsAndDisplay() {
-            const response = await fetch('/halls');
-            const halls = await response.json();
-
-            const hallListDiv = document.getElementById('hallList');
-            hallListDiv.innerHTML = ''; // Clear previous content
-
-            halls.forEach(hall => {
-                const hallButton = document.createElement('button');
-                hallButton.textContent = hall;
-                hallButton.id = hall; // Set the id attribute to the hall name
-                hallButton.addEventListener('click', () => {
-                    const parameter = hallButton.textContent; // Get the inner text of the hall button
-                    fetchRoomOccupancy(parameter);
-                });
-                hallListDiv.appendChild(hallButton);
-            });
-        }
-
-        async function fetchRoomOccupancy(parameter) {
-            // let index = 0;
-            try {
-                const roomList = document.getElementById('roomList');
-                roomList.innerText ='';
-                const room_response = await fetch(`/getRoomOccupancy?hall_name=${parameter}`);
-                const rooms = await room_response.json();
-                console.log('Rooms for hall:', rooms); // Move this line here
-
-            // Create a table and header row
-            const table = document.getElementById('roomList');
-            const headerRow = document.createElement('tr');
-            const headers = ['Hall','Room', 'Empty?', 'Flagged?'];
-            headers.forEach(headerText => {
-                const headerCell = document.createElement('th');
-                headerCell.textContent = headerText;
-                headerRow.appendChild(headerCell);
-            });
-            table.appendChild(headerRow);
-            const credentials = await getCredentials();
-
-               // Loop through each room and add a row to the table
-            rooms.forEach(room => {
-                const row = document.createElement('tr');
-                const columns = [room.hall_name,room.room_num, room.occupied ? "&#10007;" : "&#10003;", room.flag ? "&#10003;" : "&#10007;"];
-                columns.forEach(columnText => {
-                    const cell = document.createElement('td');
-                    cell.innerHTML = columnText;
-                    row.appendChild(cell);
-                });
-                let cell1 = document.createElement('td');
-                if(credentials.loggedInEmp){
-                    cell1.innerHTML = `
-                        <form action="/updateRoom" method="POST">
-                            <input type="hidden" name="hallName" value="${room.hall_name}">
-                            <input type="hidden" name="roomNum" value="${room.room_num}">
-                            <button class='roomButton' onclick="">Update Occupancy</button>
-                        </form>
-                        <form action="/resetFlag" method="POST">
-                            <input type="hidden" name="hallName" value="${room.hall_name}">
-                            <input type="hidden" name="roomNum" value="${room.room_num}">
-                            <button class='roomButton' onclick="">Reset Flag</button>
-                        </form>
-                    `;
-                } else {
-                    cell1.innerHTML = `
-                        <form action="/updateFlag" method="POST">
-                            <input type="hidden" name="hallName" value="${room.hall_name}">
-                            <input type="hidden" name="roomNum" value="${room.room_num}">
-                            <button class='roomButton flagButton' onclick="">Update Flag</button>
-                        </form>
-                    `;
-                }
-                cell1.classList.add("forms");
-                row.appendChild(cell1);
-                table.appendChild(row);
-            });
-
-            } catch (error) {
-                // Handle errors if any
-                console.error('Error fetching room occupancy:', error);
-            }
-            // index++;
-}
-
-        // Call the function to fetch halls and display them as buttons when the HTML is loaded
-        window.addEventListener('load', fetchHallsAndDisplay);
-    </script>
-    <script>
-        async function hidePages(){
-            const credentials = await getCredentials();
-            if(credentials.loggedInEmp){
-                var schedule = document.getElementById('schedule');
-                schedule.style.display = 'none';
-
-            }
-            if(credentials.loggedIn){
-                var addEmp = document.getElementById('addEmp');
-                addEmp.style.display = 'none';
-
-            }
-
-        }
-        window.addEventListener('load', hidePages);
-    </script>
-
-    <script>
-    function logout () {
-        fetch('/logout')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to logout');
-                }
-                // Redirect to login page after logout
-                window.location.href = '/';
-            })
-            .catch(error => {
-                   console.error('Error:', error);
-            });
-    }
-    </script>
-    <script>
-        async function getCredentials() {
-            try {
-            const response = await fetch('/getCredentials');
-                if (!response.ok) {
-                    throw new Error('Failed to logout');
-                } 
-                return await response.json();
-            } catch (error) {
-                console.error('Error: ', error)
-            }
-        }
-        
-    </script>
 
 </body>
 </html>

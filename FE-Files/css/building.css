@@ -84,7 +84,7 @@ main{
     width: 100vw;
     min-height: 90vh;
 }
- div{
+div{
     border: none;
     border-radius: 0;
     border-right: 2px solid;
@@ -113,6 +113,18 @@ main{
     width: 32vw;
     margin-left: 10vw;
 }
+/* Add your CSS styles here */
+/* Existing CSS styles are retained */
+.helpButton {
+    background: none;
+    border: none;
+    font-size: inherit;
+    color: inherit;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+}
+
 @media (orientation:portrait) {
     body{
         width: 100vw;

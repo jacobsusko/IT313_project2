@@ -100,6 +100,12 @@ header {
     display: flex;
     flex-direction: column;
 }
+header {
+    align-items: center;
+    border: none;
+    height: auto;
+    font-size: large;
+}
 @media only screen and (max-width: 1000px) {
     section, div{
         width: 50vw;
