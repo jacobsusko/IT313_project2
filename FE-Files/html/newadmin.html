@@ -7,6 +7,7 @@
     <title>Signup</title>
     <link href="style.css" rel="stylesheet">
     <link href="newadmin.css" rel="stylesheet">
+    <script src="newadmin.js"></script>
 </head>
 <body>
     <header>
@@ -32,18 +33,7 @@
            
         </form>
     </section> 
-    <script>
-        function checkpasswords(){
-            if (document.getElementById("password").value == document.getElementById("confirmPassword").value){
-                document.getElementById("register").disabled = false;
-                document.getElementById("message").innerHTML = "";
-
-            } else {
-                document.getElementById("register").disabled = true;
-                document.getElementById("message").innerHTML = "Passwords do not match";
-            }
-        }
-    </script>
+    
     
 </body>
 </html>

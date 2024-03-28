@@ -9,6 +9,7 @@
     <title>Signup</title>
     <link href="index.css" rel="stylesheet">
     <link href="signup.css" rel="stylesheet">
+    <script src="signup.js"></script>
 </head>
 <body>
     <header>
@@ -33,18 +34,6 @@
         </form>
         <a id="backButton" href="index.html">Back to Login</a>
     </section> 
-    <script>
-        function checkpasswords(){
-            if (document.getElementById("password").value == document.getElementById("confirmPassword").value){
-                document.getElementById("register").disabled = false;
-                document.getElementById("message").innerHTML = "";
-
-            } else {
-                document.getElementById("register").disabled = true;
-                document.getElementById("message").innerHTML = "Passwords do not match";
-            }
-        }
-    </script>
     
 </body>
 </html>

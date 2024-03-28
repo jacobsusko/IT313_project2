@@ -346,6 +346,86 @@ async function scheduleRoom(req, res){
     }
 }
 
+async function scheduledRooms(req, res){
+    // Extract data from the request body
+    const { room_hall, room_num, date } = req.body;
+
+    const client = new Client({
+        user: 'centralteam',
+        host: 'localhost',
+        database: 'occupancy',
+        password: 'C3n7r@1^73@NN',
+        port: 3254,
+    });
+
+    try {
+        await client.connect();
+
+        let query = 'SELECT scheduled_time FROM occupancy."Schedule_Room" WHERE room_hall = $1 AND room_num = $2 AND lower(scheduled_time)::date = $3::date';
+        let params = [room_hall, room_num, date];
+        const result = await client.query(query, params);
+        console.log(result.rows);
+
+        if (result.rows.length > 0) {
+            console.log('Length > 1');
+            return  res.json(result.rows);
+        } else {
+            return res.json(null);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    } finally {
+        await client.end();
+    }
+}
+
+async function scheduledRoomPerHall(req, res){
+    const hallName = req.query.hall_name; // Access the parameter from the URL query string
+
+    const client = new Client({
+        user: 'centralteam',
+        host: 'localhost',
+        database: 'occupancy',
+        password: 'C3n7r@1^73@NN',
+        port: 3254,
+    });
+
+    try {
+        await client.connect();
+
+        let currentDate = new Date(); // Get current date
+        let year = currentDate.getFullYear();
+        let month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Adding 1 because months are zero-indexed
+        let day = String(currentDate.getDate()).padStart(2, '0');
+        let hours = String(currentDate.getHours()).padStart(2, '0');
+        let minutes = String(currentDate.getMinutes()).padStart(2, '0');
+        let seconds = String(currentDate.getSeconds()).padStart(2, '0');
+
+        let currentTimestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        console.log(hallName);
+        console.log(currentTimestamp);
+
+        let query = `SELECT room_hall, room_num FROM occupancy."Schedule_Room" 
+            WHERE room_hall = $1 AND $2 BETWEEN lower(scheduled_time) AND upper(scheduled_time)`;
+        let params = [hallName, currentTimestamp];
+        const result = await client.query(query, params);
+        console.log(result.rows);
+
+        if (result.rows.length > 0) {
+            console.log('Length > 1');
+            return  res.json(result.rows);
+        } else {
+            return res.json(null);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    } finally {
+        await client.end();
+    }
+}
+
 module.exports = {
     getUserData,
     getHalls,
@@ -356,5 +436,7 @@ module.exports = {
     updateFlag,
     updateEmail,
     updatePassword,
-    scheduleRoom
+    scheduleRoom,
+    scheduledRooms,
+    scheduledRoomPerHall
 };

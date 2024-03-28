@@ -114,6 +114,12 @@ section{
     width: 600px;
     height: 60vh;
   }
+  header {
+    align-items: center;
+    border: none;
+    height: auto;
+    font-size: large;
+}
 
   @media only screen and (max-width: 500px) {
     section{

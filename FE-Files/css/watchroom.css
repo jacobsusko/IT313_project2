@@ -1,0 +1,187 @@
+/* Created by David */
+*{ 
+    box-sizing: border-box;
+ }
+
+ main {
+    flex-direction: row;
+    width: 100vw;
+    align-items: stretch;
+    background-color: #dfd2aa;
+    min-height: 90vh;
+ }
+
+ button{
+    border: none;
+    border-radius: 2%;
+    margin: 0;
+    padding: 1vh;
+    background: none;
+    width: 15vw;
+    text-decoration: none;
+    color: #450084;
+    font-size: 3vh;
+    display: flex;
+    font-family: 'Times New Roman', Times, serif;
+    cursor: pointer;
+    text-align: center;
+   
+}
+
+div button{
+    height: 6vh;
+    padding: 0;
+    padding-left: 1vh;
+    vertical-align: middle;
+    padding-top: 1vh;
+    
+}
+
+div button:hover{
+    border: #450084 solid 2px;
+}
+
+#logout{
+    padding: 1vh;
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: medium;
+    width: auto;
+    margin: 0;
+    margin-right: 1vw;
+}
+
+#logout:hover{
+    opacity: 0.75;
+    transition: opacity 0.3s ease; /* Smooth transition */
+}
+
+.room-button {
+    font-size: 2vh;
+    height: 3vh;
+    padding-bottom: 5vh;
+}
+
+.room-button:hover {
+    border: none;
+    text-decoration: underline;
+}
+
+h1{
+    flex-grow: 1;
+    margin: 1vw;
+}
+header {
+    align-items: center;
+    border: none;
+    font-size: 2vh;
+}
+
+#watchTimes button {
+    width: 15vw;
+    font-size: 2vh;
+    background-color: #450084;
+    color: white;
+    height: 6vh;
+    padding: 1vh;
+}
+
+.submit-button {
+    opacity: 1; /* Default opacity */
+    transition: opacity 0.3s ease; /* Smooth transition */
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .submit-button.disabled {
+    opacity: 0.25; /* Reduced opacity when disabled */
+  }
+  
+  /* Additional CSS for hover effect if needed */
+  .submit-button:hover {
+    opacity: 0.75; /* Example hover opacity */
+    border: none;
+  }
+
+  .submit-button.disabled:hover {
+    opacity: 0.25; /* Ensure disabled opacity persists on hover */
+    cursor: default; /* Change cursor to standard */
+  }
+
+h1{
+    flex-grow: 1;
+    margin: 1vw;
+}
+
+header {
+    align-items: center;
+    border: none;
+    height: auto;
+    font-size: larger;
+    min-height: 10vh;
+}
+
+div{
+    border: none;
+    border-radius: 0;
+    border-right: 2px solid;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    height: auto;
+    align-self: flex-start;
+    background-color: #dfd2aa;
+}
+
+#watchTimes{
+    padding-top: 3vh;
+    width: 80vw;
+    border-collapse: collapse;
+    margin: 0;
+    background-color: #dfd2aa;
+    flex-grow: 1;
+    align-self: flex-start;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Horizontally center the button */
+}
+
+/* Style for labels */
+label {
+    font-size: 3vh;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+    color: #450084;
+    font-family: 'Times New Roman', Times, serif;
+}
+  
+/* Style for select elements */
+select {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 200px;
+    margin-bottom: 15px;
+    box-sizing: border-box; /* Ensure padding doesn't add to the width */
+}
+  
+/* Style for select elements on hover */
+select:hover {
+    border-color: #999;
+}
+  
+/* Style for select elements on focus */
+select:focus {
+    border-color: #66afe9;
+    outline: none; /* Remove default focus outline */
+}
+
+#hallList {
+    min-height: 90vh;
+}
