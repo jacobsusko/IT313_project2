@@ -232,7 +232,6 @@ void setup() {
 
 void loop() {
   ArduinoOTA.handle();
-  interrupt = false;
   // Handle MQTT connection/reconnection
   if (mqtt_server!="") {
     if (!mqtt.connected()) {
@@ -241,7 +240,7 @@ void loop() {
     mqtt.loop();
   }
   // if about mage sensor
-  attachInterrupt(digitalPinToInterrupt(halPin), magnet_detect, FALLING);
+  attachInterrupt(digitalPinToInterrupt(halPin), magnet_detect, RISING);
   if (interrupt) {
     Serial.println("Interrupt hit");
     int i = 0;
@@ -259,3 +258,4 @@ void loop() {
   //delay 5 seconds
   delay(5000);
 }
+// 
