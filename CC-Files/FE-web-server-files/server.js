@@ -62,10 +62,10 @@ app.use((req, res, next) => {
 app.use('/', routes);
 
 
-// // Start servers
-// httpServer.listen(80, () => {
-//     console.log('HTTP server running on port 80');
-// });
+// Start servers
+httpServer.listen(80, () => {
+    console.log('HTTP server running on port 80');
+});
 
 server.listen(443, function(){
     console.log("HTTPS server is listening on port 443");
