@@ -11,8 +11,9 @@
 occupancy_dir="/home/be313/BE/track_occ/"
 
 # Monitors changes to occupancy files
-        while inotifywait -e moved_to /home/be313/BE/track_occ; do
-        #       hall_room = $(King_357.txt | cut -d"_" -f1,2 | cut -d"." -f1)
-        #       ./CCscript-main.sh "$hall_room"
-                ./CCscript-main.sh King_357
+        while filename=$(inotifywait -e moved_to --format "%f" "$occupancy_dir"); do
+              hall_room=$(echo "$filename" | cut -d'.' -f1)
+              ./CCscript-main.sh "$hall_room"
         done
+# Makes filename the file moved to and parses it into hall_room.
+# Uses the parsed file name $hall_room as the argument to be executed with the CCscript-main.sh script.

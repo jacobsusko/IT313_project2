@@ -38,7 +38,7 @@ case "$1" in
 esac
 
 # Construct the path to the occupancy file
-occupancy_file="/home/be313/BE/track_occ/occupancy_${hall}_${room}.txt"
+occupancy_file="/home/be313/BE/track_occ/${hall}_${room}.txt"
 # Check if the occupancy file exists
 if [ -f "$occupancy_file" ]; then  # If the occupancy_file exists.
     occupancy_value=$(cat "$occupancy_file")    # Then the occumapncy_value will be read from the file specified and sent to the API and website.
