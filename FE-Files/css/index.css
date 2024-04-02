@@ -15,8 +15,6 @@ main {
     align-items: center;
     margin: 0;
     }
-    
-    
 #login{
     display: flex;
     flex-direction: column;
@@ -45,8 +43,6 @@ header {
     display: flex;
     justify-content: center;
     font-size: 2vh;
-
-        
 }
 /* Media query for phone view */
 @media only screen and (max-width: 1000px) {
