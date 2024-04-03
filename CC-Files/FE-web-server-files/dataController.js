@@ -249,12 +249,12 @@ async function updateEmail(req, res){
         await client.end();
 
         
-        res.status(200).send(`
-            <script>
-                alert('Email updated successfully.');
-                window.location.href = './UserSettings.html';
-            </script>
-        `);
+        // res.status(200).send(`
+        //     <script>
+        //         alert('Email updated successfully.');
+        //         window.location.href = './UserSettings.html';
+        //     </script>
+        // `);
    
     } catch (error) {
         console.error('Error updating email:', error);
@@ -426,6 +426,254 @@ async function scheduledRoomPerHall(req, res){
     }
 }
 
+async function submitWatchRoom(req, res) {
+    const username = req.session.username;
+    const { room_hall, room_num, start_time, end_time, day } = req.body;
+
+    console.log(username);
+    console.log(room_hall);
+    console.log(room_num);
+    console.log(start_time);
+    console.log(end_time);
+    console.log(day);
+    console.log(typeof room_num);
+
+    const client = new Client({
+        user: 'centralteam',
+        host: 'localhost',
+        database: 'occupancy',
+        password: 'C3n7r@1^73@NN',
+        port: 3254,
+    });
+
+    try {
+        await client.connect();
+        if (Number.isInteger(room_num)) {
+            console.log('Specific Room');
+            let query = `SELECT * FROM occupancy."Watch_Room" 
+                WHERE username = $1 AND weekday =$2 AND room_hall = $3 AND room_num = $4 AND start_time <= $5 AND end_time >= $6`;
+            let params = [username, day, room_hall, room_num, start_time, end_time];
+            let result = await client.query(query, params);
+            console.log(result.rows);
+
+            if (result.rows.length > 0){
+                console.log('Already in DB')
+            } else {
+                let query = 'INSERT INTO occupancy."Watch_Room" (username, weekday, room_num, room_hall, start_time, end_time, already_emailed) VALUES ($1, $2, $3, $4, $5, $6, $7)';
+                let params = [username, day, room_num, room_hall, start_time, end_time, 0];
+                await client.query(query, params);
+            }
+
+
+
+            console.log('Successfully added new Notification Schedule to Database.');
+
+            try {
+                let merged = true;
+                while (merged) {
+                    console.log('Restarting loop');
+                    merged = false;
+
+                    // Attempt to merge overlapping records
+                    await client.query(`
+                        UPDATE occupancy."Watch_Room" t1
+                        SET start_time = (
+                                SELECT MIN(start_time) 
+                                FROM occupancy."Watch_Room" t2
+                                WHERE t1.username = t2.username
+                                AND t1.weekday = t2.weekday
+                                AND t1.room_hall = t2.room_hall
+                                AND t1.room_num = t2.room_num
+                                AND t1.start_time <= t2.end_time
+                                AND t1.end_time >= t2.start_time
+                            ),
+                            end_time = (
+                                SELECT MAX(end_time) 
+                                FROM occupancy."Watch_Room" t3
+                                WHERE t1.username = t3.username
+                                AND t1.weekday = t3.weekday
+                                AND t1.room_hall = t3.room_hall
+                                AND t1.room_num = t3.room_num
+                                AND t1.start_time <= t3.end_time
+                                AND t1.end_time >= t3.start_time
+                            )
+                        FROM occupancy."Watch_Room" t2
+                        WHERE t1.username = t2.username
+                        AND t1.weekday = t2.weekday
+                        AND t1.room_hall = t2.room_hall
+                        AND t1.room_num = t2.room_num
+                        AND t1.start_time <= t2.end_time
+                        AND t1.end_time >= t2.start_time
+                        AND t1.watch_id != t2.watch_id
+                    `);
+
+                    // Delete redundant records
+                    await client.query(`
+                        DELETE FROM occupancy."Watch_Room" t2
+                        USING occupancy."Watch_Room" t1
+                        WHERE t1.start_time <= t2.start_time
+                        AND t1.end_time >= t2.end_time
+                        AND t1.username = t2.username
+                        AND t1.weekday = t2.weekday
+                        AND t1.room_hall = t2.room_hall
+                        AND t1.room_num = t2.room_num
+                        AND t1.watch_id < t2.watch_id
+                    `);
+
+                    // Check if any overlapping records were merged
+                    const result = await client.query(`
+                        SELECT COUNT(*) AS count
+                        FROM occupancy."Watch_Room" t1
+                        JOIN occupancy."Watch_Room" t2 ON
+                            t1.username = t2.username
+                            AND t1.weekday = t2.weekday
+                            AND t1.room_hall = t2.room_hall
+                            AND t1.room_num = t2.room_num
+                            AND t1.start_time <= t2.end_time
+                            AND t1.end_time >= t2.start_time
+                            AND t1.watch_id != t2.watch_id
+                    `);
+                    merged = result.rows[0].count > 0;
+                }
+
+
+                
+            
+                // Leave records without overlap alone
+            
+                // Close the connection pool
+                await client.end();
+                console.log("Data processed successfully.");
+              } catch (error) {
+                console.error("Error processing data:", error);
+              }
+            
+
+
+        } else {
+            console.log('All Rooms in Hall');
+            let query = `SELECT room_num FROM occupancy."Study_Room" 
+                        WHERE hall_name = $1`;
+            let params = [room_hall];
+            const roomResult = await client.query(query, params); // Renamed result variable
+            console.log(roomResult.rows);
+            if (roomResult.rows.length < 1) {
+                console.log('Hall has no rooms.');
+            } else {
+                // Iterate over each room number
+                for (let i = 0; i < roomResult.rows.length; i++) {
+                    let currentRoomNum = roomResult.rows[i].room_num;
+                    console.log('Processing room number:', currentRoomNum);
+                    
+                    // Execute the same logic as for specific room
+                    // Replace occurrences of room_num with currentRoomNum
+                    let query = `SELECT * FROM occupancy."Watch_Room" 
+                        WHERE username = $1 AND weekday =$2 AND room_hall = $3 AND room_num = $4 AND start_time <= $5 AND end_time >= $6`;
+                    let params = [username, day, room_hall, currentRoomNum, start_time, end_time];
+                    let watchResult = await client.query(query, params); // Renamed result variable
+                    console.log(watchResult.rows);
+        
+                    if (watchResult.rows.length > 0) {
+                        console.log('Already in DB');
+                    } else {
+                        let query = 'INSERT INTO occupancy."Watch_Room" (username, weekday, room_num, room_hall, start_time, end_time, already_emailed) VALUES ($1, $2, $3, $4, $5, $6, $7)';
+                        let params = [username, day, currentRoomNum, room_hall, start_time, end_time, 0];
+                        await client.query(query, params);
+                    }
+        
+                    // Merge overlapping records, delete redundant records, etc.
+                    // This part remains unchanged
+                    try {
+                        let merged = true;
+                        while (merged) {
+                            console.log('Restarting loop');
+                            merged = false;
+        
+                            // Attempt to merge overlapping records
+                            await client.query(`
+                                UPDATE occupancy."Watch_Room" t1
+                                SET start_time = (
+                                        SELECT MIN(start_time) 
+                                        FROM occupancy."Watch_Room" t2
+                                        WHERE t1.username = t2.username
+                                        AND t1.weekday = t2.weekday
+                                        AND t1.room_hall = t2.room_hall
+                                        AND t1.room_num = t2.room_num
+                                        AND t1.start_time <= t2.end_time
+                                        AND t1.end_time >= t2.start_time
+                                    ),
+                                    end_time = (
+                                        SELECT MAX(end_time) 
+                                        FROM occupancy."Watch_Room" t3
+                                        WHERE t1.username = t3.username
+                                        AND t1.weekday = t3.weekday
+                                        AND t1.room_hall = t3.room_hall
+                                        AND t1.room_num = t3.room_num
+                                        AND t1.start_time <= t3.end_time
+                                        AND t1.end_time >= t3.start_time
+                                    )
+                                FROM occupancy."Watch_Room" t2
+                                WHERE t1.username = t2.username
+                                AND t1.weekday = t2.weekday
+                                AND t1.room_hall = t2.room_hall
+                                AND t1.room_num = t2.room_num
+                                AND t1.start_time <= t2.end_time
+                                AND t1.end_time >= t2.start_time
+                                AND t1.watch_id != t2.watch_id
+                            `);
+        
+                            // Delete redundant records
+                            await client.query(`
+                                DELETE FROM occupancy."Watch_Room" t2
+                                USING occupancy."Watch_Room" t1
+                                WHERE t1.start_time <= t2.start_time
+                                AND t1.end_time >= t2.end_time
+                                AND t1.username = t2.username
+                                AND t1.weekday = t2.weekday
+                                AND t1.room_hall = t2.room_hall
+                                AND t1.room_num = t2.room_num
+                                AND t1.watch_id < t2.watch_id
+                            `);
+        
+                            // Check if any overlapping records were merged
+                            const result = await client.query(`
+                                SELECT COUNT(*) AS count
+                                FROM occupancy."Watch_Room" t1
+                                JOIN occupancy."Watch_Room" t2 ON
+                                    t1.username = t2.username
+                                    AND t1.weekday = t2.weekday
+                                    AND t1.room_hall = t2.room_hall
+                                    AND t1.room_num = t2.room_num
+                                    AND t1.start_time <= t2.end_time
+                                    AND t1.end_time >= t2.start_time
+                                    AND t1.watch_id != t2.watch_id
+                            `);
+                            merged = result.rows[0].count > 0;
+                        }
+        
+                        console.log("Data processed successfully.");
+                      } catch (error) {
+                        console.error("Error processing data:", error);
+                      }
+        
+                }
+                
+                // Close the connection pool after processing all rooms
+                await client.end();
+                console.log("Data processed successfully.");
+            }
+        }
+        return res.status(200).json({ message: 'Notifications updated successfully' });
+
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    } finally {
+        await client.end();
+    }
+
+}
+
 module.exports = {
     getUserData,
     getHalls,
@@ -438,5 +686,6 @@ module.exports = {
     updatePassword,
     scheduleRoom,
     scheduledRooms,
-    scheduledRoomPerHall
+    scheduledRoomPerHall,
+    submitWatchRoom
 };
