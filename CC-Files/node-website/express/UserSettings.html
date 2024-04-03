@@ -1,0 +1,56 @@
+<!-- 
+    Austin Hodgkiss
+ -->
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>User Profile</title>
+     
+     <link rel="stylesheet" href="UserSettings.css">
+     <script src="UserSettings.js"></script>
+ </head>
+ <body>
+     <header>
+        <h1 id="userData"></h1>
+        <nav class ="navlink">
+            <ul>
+                <li class="navlink" id="RoomEmail"><a href="watchroom.html">Notifications</a></li>
+                <li class="navlink" id="schedule"><a href="schedulling.html">Scheduling</a></li>
+                <li class="navlink" id ="building"><a href="building.html">Buildings</a></li>
+            </ul>
+        </nav>
+        <button onclick="logout()" id="logout">Log out</button>
+     </header>
+     
+     <main>
+         <section>
+            <!-- Displays the user info Username, First and last name, and Email -->
+            <h2>User Information</h2>
+            <div id="userInfo">
+               
+            </div>
+            
+            <!-- Pushes submitted email to the database. -->
+            <h2>Update Email</h2>
+            <form id="updateEmailForm" action="/updateEmail" method="POST">
+                <label for="email">New Email:</label>
+                <input type="email" id="email" name="email" required>
+                <button onclick="updateData()" type="submit">Update Email</button>
+            </form>
+ 
+            <!-- Pushes submitted password to the database, and logs out user -->
+            <h2>Update Password</h2>
+            <form id="updatePasswordForm" action="/updatePassword" method="POST">  
+                <div>
+                    <label for="password">New Password:</label>
+                    <input type="password" id="password" name="password" required>
+                    <button onclick="logout()" type="submit">Update Password</button>
+                </div>
+            </form>
+        </section>
+    </main>
+ </body>
+ </html>
+ 

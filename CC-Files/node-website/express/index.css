@@ -1,0 +1,78 @@
+/*!
+ * Robbie and Teo
+ */
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #CBB677;
+    }
+    
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    }
+    
+    
+#login{
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    gap: 10px;
+    }
+section, div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid;
+    border-radius: 2%;
+    margin: 2%;
+    padding: 2%;
+    background-color: #dfd2aa;
+    width: 600px;
+    height: 50vh;
+}
+header {
+    color: white;
+    background-color: #450084;
+    width: 100vw;
+    border-bottom: 1px solid white; 
+    margin: 0;
+    height: 10vh;
+    display: flex;
+    justify-content: center;
+    font-size: 2vh;
+
+        
+}
+/* Media query for phone view */
+@media only screen and (max-width: 1000px) {
+   section, div{
+    background-color: #dfd2aa;
+    font-size: 2.2em;
+    width: 80vw;
+    height: 50vw;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    top: 20vh;
+   }
+   header{
+    font-size: x-large;
+    height: auto;
+   }
+   input, #login{
+    font-size: 0.8em;
+    width: 300px;
+   }
+   p{
+    font-size: 1.2em;
+   }
+
+
+  }
