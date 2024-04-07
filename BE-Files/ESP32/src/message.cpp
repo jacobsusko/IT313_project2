@@ -124,7 +124,7 @@ float calibrate() {
     return average;
 }
 
-bool sendAMGImage() {
+bool isRoomOccup() {
     if(roomBaseline == 0.0) {
         roomBaseline = calibrate();
     } else if(!roomOccup && millis()-lastCal >= SAMPLING) {
@@ -241,18 +241,22 @@ void loop() {
     }
     mqtt.loop();
   }
-  // if about mage sensor
+  // if about magnet sensor
   attachInterrupt(digitalPinToInterrupt(halPin), magnet_detect, FALLING);
   Serial.println("Starting");
   if (interrupt) {
     Serial.println("Interrupt hit");
     int i = 0;
     delay(3000);
-    while (i <= 4) {
-        if (sendAMGImage) {
+    while (i <= 8) {
+        bool occup = isRoomOccup();
+        if (occup) {
             mqtt.publish(topicStatus, "true");
+            Serial.println("Sent Image");
+            Serial.println(i);
         } else {
             i++;
+            Serial.println(i);
         }
     }
     interrupt = false;
