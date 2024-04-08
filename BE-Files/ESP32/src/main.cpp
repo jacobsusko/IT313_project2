@@ -17,17 +17,23 @@
 #include <Adafruit_AMG88xx.h>
 #include <PubSubClient.h>           // MQTT support
 
-#define SEALEVELPRESSURE_HPA (1013.25)
+// Sampling/Interval Constants
 #define STATUSINTERVAL 30000 // Interval of the status messages
 #define AMGSAMPLING 1000 // AMG8833 thermal camera sampling in milliseconds
 #define SAMPLING 15000 
 
+// Sampling/Interval Variables
+unsigned long endTime, uptime, lastStatus, lastAMG;
+int  vSTATUSINTERVAL, vAMGSAMPLING;
+
+// AMG Thermal Sensor Constants
 Adafruit_AMG88xx amg;
 unsigned long delayTime;
-
 #define AMG_COLS 8
 #define AMG_ROWS 8
+float pixels[AMG88xx_PIXEL_ARRAY_SIZE];
 
+// Connection to Raspberry PI Constants
 const char* ssid = "IT313-Study";
 const char* password = "checkout2";
 const char* mqtt_server = "192.168.25.10"; 
@@ -35,17 +41,11 @@ const char* mqtt_user = "Backend";
 const char* mqtt_password = "Bestend";
 const char* clientID = "IT313MQTT";
 const char* topicStatus = "topicKing357";
-const char* topicBME = "/thermal/bme";
-const char* topicThermal = "/topics/amg";
 const int halPin = 19;
-
 WiFiClient espClient;
 PubSubClient mqtt(mqtt_server, 1883, 0, espClient);
 
-unsigned long endTime, uptime, lastStatus, lastAMG;
-int  vSTATUSINTERVAL, vAMGSAMPLING;
-
-float pixels[AMG88xx_PIXEL_ARRAY_SIZE];
+// Calculation Variables
 double fahrenheit; // degrees in fahrenheit
 boolean roomOccup;
 int count;
@@ -75,6 +75,7 @@ void reconnect() {
   }
 }
 
+// Function for testing MQTT Connections
 void callback(char* topic, byte* payload, unsigned int length) {
   // Convert the incoming byte array to a string
   String strTopic = String((char*)topic);
@@ -89,7 +90,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 }
 
 
-
+// Testing Function for Sending MQTT Status  
 void sendStatus() {
   Serial.print("Status | RSSI: ");
   Serial.print(WiFi.RSSI());
@@ -108,6 +109,7 @@ String mqttStat = "";
   }
 }
 
+// Function to Calibrate the Thermal Camera
 float calibrate() {
     float sum = 0.0;
     float average;
@@ -124,6 +126,8 @@ float calibrate() {
     return average;
 }
 
+// Function to See if Room is Occupied or not Based on Calibration and Calculation of 
+// how many "Pixels" are above the Calbrated Threshold
 bool isRoomOccup() {
     if(roomBaseline == 0.0) {
         roomBaseline = calibrate();
@@ -154,14 +158,18 @@ bool isRoomOccup() {
     return roomOccup;
 }
 
+// Function necessary for Interrupt 
+// If it is any longer, or tries to do any sort of printing anywhere, the boards CPU cores will dump because of a watchdog timer
 void magnet_detect() {
   interrupt = true;
 }
 
+// Setup Function for Arduino Style coding
 void setup() {
   Serial.begin(9600);
   Serial.println("Booting");
   Serial.println(F("Connecting to Wifi"));
+  // Connects to WiFi
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
@@ -211,6 +219,7 @@ void setup() {
 
   ArduinoOTA.begin();
 
+  // Outputs IP Address
   Serial.println("Ready");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
@@ -222,6 +231,7 @@ void setup() {
     mqtt.setCallback(callback);
   }
 
+  // Checks to see if Thermal camera is plugged in correctly
   if (!amg.begin()) {
     Serial.println("Could not find a valid AMG88xx sensor, check wiring!");
     while (1) { delay(1); }
@@ -234,7 +244,7 @@ void loop() {
   ArduinoOTA.handle();
   // Handle MQTT connection/reconnection
   if (mqtt_server!="") {
-    Serial.print("MQTT Start");
+    Serial.println("MQTT Start");
     if (!mqtt.connected()) {
       Serial.println("MQTT Reconnecting");
       reconnect();
@@ -244,11 +254,16 @@ void loop() {
   // if about magnet sensor
   attachInterrupt(digitalPinToInterrupt(halPin), magnet_detect, FALLING);
   Serial.println("Starting");
+  // Interrupt variable from before
   if (interrupt) {
     Serial.println("Interrupt hit");
     int i = 0;
     delay(3000);
-    while (i <= 8) {
+    // While loop to test if the room is occupied
+    // Keeps repeating while someone is in the room
+    // If no one is increase the counter (i)
+    // This keeps false triggerings down in case of incorrect occupation status
+    while (i <= 5) {
         bool occup = isRoomOccup();
         if (occup) {
             mqtt.publish(topicStatus, "true");
