@@ -131,6 +131,59 @@ async function fetchRoomOccupancy(parameter) {
             cell1.classList.add("forms");
             row.appendChild(cell1);
             table.appendChild(row);
+
+            // Data representing average busyness per day
+var averageBusyness = {
+    'Sunday': 10,
+    'Monday': 20,
+    'Tuesday': 15,
+    'Wednesday': 25,
+    'Thursday': 30,
+    'Friday': 35,
+    'Saturday': 40
+};
+
+// Create table element
+var avgb = document.createElement('table');
+
+// Create thead element
+var thead = document.createElement('thead');
+var trHead = document.createElement('tr');
+
+// Create table headers
+var thDay = document.createElement('th');
+thDay.textContent = 'Day';
+var thAverage = document.createElement('th');
+thAverage.textContent = 'Average Busyness';
+
+// Append headers to thead
+trHead.appendChild(thDay);
+trHead.appendChild(thAverage);
+thead.appendChild(trHead);
+
+// Append thead to table
+avgb.appendChild(thead);
+
+// Create tbody element
+var tbody = document.createElement('tbody');
+
+// Populate tbody with data
+for (var day in averageBusyness) {
+    var tr = document.createElement('tr');
+    var tdDay = document.createElement('td');
+    tdDay.textContent = day;
+    var tdAverage = document.createElement('td');
+    tdAverage.textContent = averageBusyness[day];
+    tr.appendChild(tdDay);
+    tr.appendChild(tdAverage);
+    tbody.appendChild(tr);
+}
+
+// Append tbody to table
+avgb.appendChild(tbody);
+
+// Append table to container
+document.getElementById('tableContainer').appendChild(avgb);
         });
 
     } catch (error) {
