@@ -13,7 +13,7 @@
  </head>
  <body>
      <header>
-         <h1 id="userData">Room Email Notifications</h1>
+         <h1 id="userData">Notifications</h1>
          <nav class ="navlink">
              <ul>
                 <li class="navlink" id="building"><a href="building.html">Buildings</a></li>
@@ -21,7 +21,7 @@
                 <li class="navlink" id="settings"><a href="UserSettings.html">Settings</a></li>
              </ul>
          </nav>
-             <button onclick ="logout()" id ="logout">Log out</button>
+            <button onclick ="logout()" id ="logout">Log out</button>
  
              
      </header>
@@ -31,13 +31,13 @@
         <div id="watchTimes">
             <label for="daySelect">Select a Day:</label><br>
             <select id="daySelect">
-                <option value="1">Sunday</option>
-                <option value="2">Monday</option>
-                <option value="3">Tuesday</option>
-                <option value="4">Wednesday</option>
-                <option value="5">Thursday</option>
-                <option value="6">Friday</option>
-                <option value="7">Saturday</option>
+                <option value="0">Sunday</option>
+                <option value="1">Monday</option>
+                <option value="2">Tuesday</option>
+                <option value="3">Wednesday</option>
+                <option value="4">Thursday</option>
+                <option value="5">Friday</option>
+                <option value="6">Saturday</option>
             </select><br>
             <label for="timeSelectStart">Select a Start Time:</label><br>
             <select id="timeSelectStart">
@@ -71,9 +71,14 @@
                 <option value="20:00:00">8:00 P.M.</option>
             </select><br>
 
-            <button onclick="submitWatchTime()" id="submit" class="submit-button">Submit Room Watch Time</button>
+            <button onclick="submitWatchTime(), reportRoom()" id="submit" class="submit-button disabled" disabled>Submit Room Watch Time</button> 
+            <div class="overlay" id="overlay">
+                <div class="success-box">
+                    Success
+                </div>
+            </div>
         </div>
     </main>
-    
+    <script src="watchroom.js"></script> 
 </body>
 </html>

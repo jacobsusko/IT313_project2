@@ -152,12 +152,13 @@ async function scheduleTime(time) {
     const responseData = await response.json();
 
     // Display the response message in an alert
-    alert(responseData.message);
+    // alert(responseData.message);
 
     // Refresh the page after a short delay (e.g., 1 second)
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 1000);
+    fetchTimes(hallName,roomNum);
 
     } catch (error) {
         console.error('Error scheduling room:', error);
@@ -291,20 +292,19 @@ alert('Failed to schedule room. Please try again later.');
  // Call the function to fetch halls and display them as buttons when the HTML is loaded
  window.addEventListener('load', fetchHallsAndDisplay);
 
- 
-function logout () {
-fetch('/logout')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to logout');
-        }
-        // Redirect to login page after logout
-        window.location.href = '/';
-    })
-    .catch(error => {
-           console.error('Error:', error);
-    });
-}
+ function logout() {
+    fetch('/logout')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to logout');
+            }
+            // Redirect to login page after logout
+            window.location.href = '/';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+} 
 function add12Hours(timeString) {
     // Split the time string into hours, minutes, and seconds
     var parts = timeString.split(':');
