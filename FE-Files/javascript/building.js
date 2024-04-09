@@ -132,7 +132,9 @@ async function fetchRoomOccupancy(parameter) {
             row.appendChild(cell1);
             table.appendChild(row);
 
-            // Data representing average busyness per day
+
+            //average busyness
+// Data representing average busyness per day
 var averageBusyness = {
     'Sunday': 10,
     'Monday': 20,
