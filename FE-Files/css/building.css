@@ -56,7 +56,7 @@ header {
     height: auto;
     font-size: large;
 }
-.table table {
+#roomList table {
     width: 80vw;
     border-collapse: collapse;
     margin: 0;
@@ -65,7 +65,7 @@ header {
     align-self: flex-start;
 }
 
-.table th, td {
+#roomList th, td {
     padding: 12px;
     text-align: center;
     font-size: 2.5vh;
@@ -73,7 +73,7 @@ header {
     color: #450084;
     
 }
-.table tr{
+#roomList tr{
     height: 8vh;
     border-bottom: 2px solid black;
     width: auto;
@@ -140,12 +140,12 @@ div{
     margin: 0;
 }
 
-.avgb {
+#avgb {
     border-collapse: collapse;
     width: 50%;
     margin: 20px auto;
 }
-.avgb th, .avgb td {
+#avgb th, #avgb td {
     border: 1px solid black;
     padding: 8px;
     text-align: center;
