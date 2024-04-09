@@ -144,6 +144,8 @@ div{
     border-collapse: collapse;
     width: 50%;
     margin: 20px auto;
+    align-items: center;
+    justify-content: center;
 }
 #avgb th, #avgb td {
     border: 1px solid black;
