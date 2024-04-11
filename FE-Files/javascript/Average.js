@@ -36,3 +36,30 @@ async function fetchHallsAndDisplay() {
         hallListDiv.appendChild(hallButton);
     });
 }
+
+
+function logout() {
+    fetch('/logout')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to logout');
+            }
+            // Redirect to login page after logout
+            window.location.href = '/';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
+async function getCredentials() {
+    try {
+        const response = await fetch('/getCredentials');
+        if (!response.ok) {
+            throw new Error('Failed to logout');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error: ', error)
+    }
+}
