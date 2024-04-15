@@ -1,4 +1,4 @@
-
+// Packages
 #include <WiFi.h>
 #include <Arduino.h>
 #include <SPI.h>
@@ -41,6 +41,7 @@ PubSubClient mqtt(mqtt_server, 1883, 0, espClient);
 // Calculation Variables
 double fahrenheit; // degrees in fahrenheit
 boolean roomOccup;
+boolean occup;
 int count;
 float roomBaseline;
 unsigned long lastCal;
@@ -197,6 +198,7 @@ void setup() {
   vAMGSAMPLING = AMGSAMPLING;
   roomBaseline = 0.0;
   roomOccup = isRoomOccup(5);
+  occup = false;
 }
 
 void loop() {
@@ -221,22 +223,23 @@ void loop() {
     // If no one is increase the counter (i)
     // This keeps false triggerings down in case of incorrect occupation status
     for(int i = 0; i <= 5; i++) {
-      bool occup = isRoomOccup(5);
-      if(occup) {
+      bool occupied = isRoomOccup(5);
+      if(occupied) {
         counter++;
       }
     }
-    
+    Serial.println(counter);
     if(counter > 3) {
-      // if (roomOccup == false) {
-        roomOccup = true;
+      Serial.println(roomOccup);
+      if (occup == false) {
+        occup = true;
         mqtt.publish(topicStatus, "true");
-      // } 
+      } 
     } else {
-      // if(roomOccup == true) {
-        roomOccup = false;
+      if(occup == true) {
+        occup = false;
         mqtt.publish(topicStatus, "false");
-      // }
+      }
     }
     interrupt = false;
   }
