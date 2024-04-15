@@ -40,7 +40,7 @@ const char* mqtt_server = "192.168.25.10";
 const char* mqtt_user = "Backend";
 const char* mqtt_password = "Bestend";
 const char* clientID = "IT313MQTT";
-const char* topicStatus = "topicKing357";
+const char* topicStatus = "topicKing358";
 const int halPin = 19;
 WiFiClient espClient;
 PubSubClient mqtt(mqtt_server, 1883, 0, espClient);
@@ -64,7 +64,7 @@ void reconnect() {
     if (mqtt.connect(clientID, mqtt_user, mqtt_password)) {
       Serial.println(F("connected"));
       // ... and resubscribe
-      //mqtt.subscribe(topicSleep);
+      // mqtt.subscribe(topicStatus);
     } else {
       Serial.print(F("failed, rc="));
       Serial.print(mqtt.state());
@@ -121,7 +121,7 @@ float calibrate() {
             sum = sum + fahrenheit;
         }
     }
-    average = sum/192.0;
+    average = (sum/192.0) + 1;
     Serial.println(average);
     return average;
 }
@@ -129,12 +129,6 @@ float calibrate() {
 // Function to See if Room is Occupied or not Based on Calibration and Calculation of 
 // how many "Pixels" are above the Calbrated Threshold
 bool isRoomOccup() {
-    if(roomBaseline == 0.0) {
-        roomBaseline = calibrate();
-    } else if(!roomOccup && millis()-lastCal >= SAMPLING) {
-        lastCal = millis();
-        roomBaseline = calibrate();
-    }
     amg.readPixels(pixels);
     // Serial.print("[");
     for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
@@ -258,7 +252,8 @@ void loop() {
   if (interrupt) {
     Serial.println("Interrupt hit");
     int i = 0;
-    delay(3000);
+    roomBaseline = calibrate();
+    delay(5000);
     // While loop to test if the room is occupied
     // Keeps repeating while someone is in the room
     // If no one is increase the counter (i)
@@ -268,7 +263,8 @@ void loop() {
         if (occup) {
             mqtt.publish(topicStatus, "true");
             Serial.println("Sent Image");
-            Serial.println(i);
+            i = 0;
+            Serial.println("Reset counter");
         } else {
             i++;
             Serial.println(i);
@@ -277,7 +273,4 @@ void loop() {
     interrupt = false;
   }
   mqtt.publish(topicStatus, "false");
-  //delay 5 seconds
-  delay(5000);
 }
-// 
