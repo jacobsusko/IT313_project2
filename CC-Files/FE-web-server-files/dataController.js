@@ -43,6 +43,7 @@ async function getUserData(req, res) {
             return res.status(404).json({ error: 'User not found'});
         }
         }
+        console.log(userData);
         res.json(userData);
 
     } catch (err) {
@@ -71,6 +72,7 @@ async function getHalls(req, res) {
         if (result.rows.length > 0) {
             const halls = result.rows.map(row => row.hall_name);
             await client.end();
+            console.log(halls);
             res.json(halls);
         } else {
             res.status(404).json({ error: 'No Halls found'});
@@ -212,19 +214,21 @@ async function updateFlag(req, res){
         await client.query(query, params);
 
         await client.end();
-
+        console.log('SUCCESS!');
+        
         // res.status(200).send(".<br><div align='center'><a href='./building.html'>Building Page<a><div>");
-        res.status(200).send(`
-            <script>
-                alert('Room flag updated successfully.');
-                window.location.href = './building.html';
-            </script>
-        `);
+        // res.status(200).send(`
+        //     <script>
+        //         alert('Room flag updated successfully.');
+        //         window.location.href = './building.html';
+        //     </script>
+        // `);
     } catch (error) {
         console.error('Error updating room:', error);
         res.status(500).send('Internal Server Error');
     }
 }
+
 
 // Author: Austin, with assistance from David
 async function updateEmail(req, res){
@@ -247,7 +251,7 @@ async function updateEmail(req, res){
         await client.query(query, params);
 
         await client.end();
-
+        
         
         // res.status(200).send(`
         //     <script>
@@ -663,7 +667,8 @@ async function submitWatchRoom(req, res) {
                 console.log("Data processed successfully.");
             }
         }
-        return res.status(200).json({ message: 'Notifications updated successfully' });
+        // return res.status(200).json({ message: 'Notifications updated successfully' });
+        console.log('SUCCESS!');
 
     } catch (error) {
         console.error('Error:', error);

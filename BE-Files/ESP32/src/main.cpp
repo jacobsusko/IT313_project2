@@ -4,7 +4,8 @@
 // GND         | GND           
 // D21         | SDA          
 // D22         | SCL           
-//
+
+
 #include <WiFi.h>
 #include <Arduino.h>
 #include <SPI.h>
@@ -16,18 +17,23 @@
 #include <Adafruit_AMG88xx.h>
 #include <PubSubClient.h>           // MQTT support
 
-#define SEALEVELPRESSURE_HPA (1013.25)
+// Sampling/Interval Constants
 #define STATUSINTERVAL 30000 // Interval of the status messages
 #define AMGSAMPLING 1000 // AMG8833 thermal camera sampling in milliseconds
 #define SAMPLING 15000 
 
+// Sampling/Interval Variables
+unsigned long endTime, uptime, lastStatus, lastAMG;
+int  vSTATUSINTERVAL, vAMGSAMPLING;
+
+// AMG Thermal Sensor Constants
 Adafruit_AMG88xx amg;
 unsigned long delayTime;
-
 #define AMG_COLS 8
 #define AMG_ROWS 8
+float pixels[AMG88xx_PIXEL_ARRAY_SIZE];
 
-
+// Connection to Raspberry PI Constants
 const char* ssid = "IT313-Study";
 const char* password = "checkout2";
 const char* mqtt_server = "192.168.25.10"; 
@@ -35,21 +41,18 @@ const char* mqtt_user = "Backend";
 const char* mqtt_password = "Bestend";
 const char* clientID = "IT313MQTT";
 const char* topicStatus = "topicKing357";
-const char* topicBME = "/thermal/bme";
-const char* topicThermal = "/topics/amg";
-
+const int halPin = 19;
 WiFiClient espClient;
 PubSubClient mqtt(mqtt_server, 1883, 0, espClient);
 
-unsigned long endTime, uptime, lastStatus, lastAMG;
-int  vSTATUSINTERVAL, vAMGSAMPLING;
-
-float pixels[AMG88xx_PIXEL_ARRAY_SIZE];
+// Calculation Variables
 double fahrenheit; // degrees in fahrenheit
 boolean roomOccup;
 int count;
 float roomBaseline;
 unsigned long lastCal;
+boolean interrupt = false;
+
 
 // MQTT reconnect logic
 void reconnect() {
@@ -72,6 +75,7 @@ void reconnect() {
   }
 }
 
+// Function for testing MQTT Connections
 void callback(char* topic, byte* payload, unsigned int length) {
   // Convert the incoming byte array to a string
   String strTopic = String((char*)topic);
@@ -86,7 +90,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 }
 
 
-
+// Testing Function for Sending MQTT Status  
 void sendStatus() {
   Serial.print("Status | RSSI: ");
   Serial.print(WiFi.RSSI());
@@ -105,6 +109,7 @@ String mqttStat = "";
   }
 }
 
+// Function to Calibrate the Thermal Camera
 float calibrate() {
     float sum = 0.0;
     float average;
@@ -121,29 +126,50 @@ float calibrate() {
     return average;
 }
 
-void sendAMGImage() {
-  //read all the pixels
-  String image = "";
-  amg.readPixels(pixels);  
-  Serial.print("[");
-  for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
-    image = image + pixels[i-1] + ",";
-    Serial.print(pixels[i-1]);
-    Serial.print(", ");
-    if( i%8 == 0 ) Serial.println();
-  }
-  image = image.substring(0, image.length() - 1);
-  Serial.println("]");
-  Serial.println();
-  if (mqtt_server!="") {
-    mqtt.publish(topicThermal, image.c_str());
-  } 
+// Function to See if Room is Occupied or not Based on Calibration and Calculation of 
+// how many "Pixels" are above the Calbrated Threshold
+bool isRoomOccup() {
+    if(roomBaseline == 0.0) {
+        roomBaseline = calibrate();
+    } else if(!roomOccup && millis()-lastCal >= SAMPLING) {
+        lastCal = millis();
+        roomBaseline = calibrate();
+    }
+    amg.readPixels(pixels);
+    // Serial.print("[");
+    for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
+      fahrenheit = (pixels[i-1] * 9.0) / 5.0 + 32;
+      Serial.print(fahrenheit);
+      Serial.print(", ");
+      if( i%8 == 0 ) Serial.println();
+      if (fahrenheit > roomBaseline + 0.75) count++;
+    }
+    // Serial.println("]");
+    if(count >= 13) {
+        Serial.println(roomBaseline);
+        Serial.println("The room is occupied");
+        roomOccup = true;
+    } else {
+        Serial.println(roomBaseline);
+        Serial.println("The room is NOT occupied");
+        roomOccup = false;
+    }
+    count = 0;
+    return roomOccup;
 }
 
+// Function necessary for Interrupt 
+// If it is any longer, or tries to do any sort of printing anywhere, the boards CPU cores will dump because of a watchdog timer
+void magnet_detect() {
+  interrupt = true;
+}
+
+// Setup Function for Arduino Style coding
 void setup() {
   Serial.begin(9600);
   Serial.println("Booting");
   Serial.println(F("Connecting to Wifi"));
+  // Connects to WiFi
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
@@ -165,34 +191,35 @@ void setup() {
   // MD5(admin) = 21232f297a57a5a743894a0e4a801fc3
   // ArduinoOTA.setPasswordHash("21232f297a57a5a743894a0e4a801fc3");
 
-//   ArduinoOTA
-//     .onStart([]() {
-//       String type;
-//       if (ArduinoOTA.getCommand() == U_FLASH)
-//         type = "sketch";
-//       else // U_SPIFFS
-//         type = "filesystem";
+  ArduinoOTA
+    .onStart([]() {
+      String type;
+      if (ArduinoOTA.getCommand() == U_FLASH)
+        type = "sketch";
+      else // U_SPIFFS
+        type = "filesystem";
 
-//       // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
-//       Serial.println("Start updating " + type);
-//     })
-//     .onEnd([]() {
-//       Serial.println("\nEnd");
-//     })
-//     .onProgress([](unsigned int progress, unsigned int total) {
-//       Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
-//     })
-//     .onError([](ota_error_t error) {
-//       Serial.printf("Error[%u]: ", error);
-//       if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
-//       else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
-//       else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
-//       else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
-//       else if (error == OTA_END_ERROR) Serial.println("End Failed");
-//     });
+      // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
+      Serial.println("Start updating " + type);
+    })
+    .onEnd([]() {
+      Serial.println("\nEnd");
+    })
+    .onProgress([](unsigned int progress, unsigned int total) {
+      Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+    })
+    .onError([](ota_error_t error) {
+      Serial.printf("Error[%u]: ", error);
+      if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
+      else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
+      else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
+      else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
+      else if (error == OTA_END_ERROR) Serial.println("End Failed");
+    });
 
-//   ArduinoOTA.begin();
+  ArduinoOTA.begin();
 
+  // Outputs IP Address
   Serial.println("Ready");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
@@ -204,59 +231,53 @@ void setup() {
     mqtt.setCallback(callback);
   }
 
-
-
+  // Checks to see if Thermal camera is plugged in correctly
   if (!amg.begin()) {
     Serial.println("Could not find a valid AMG88xx sensor, check wiring!");
     while (1) { delay(1); }
   }
-
   vSTATUSINTERVAL = STATUSINTERVAL;
   vAMGSAMPLING = AMGSAMPLING;
- 
 }
 
 void loop() {
   ArduinoOTA.handle();
-
   // Handle MQTT connection/reconnection
   if (mqtt_server!="") {
+    Serial.println("MQTT Start");
     if (!mqtt.connected()) {
+      Serial.println("MQTT Reconnecting");
       reconnect();
     }
     mqtt.loop();
   }
-  
-    if(roomBaseline == 0.0) {
-        roomBaseline = calibrate();
-    } else if(!roomOccup && millis()-lastCal >= SAMPLING) {
-        lastCal = millis();
-        roomBaseline = calibrate();
+  // if about magnet sensor
+  attachInterrupt(digitalPinToInterrupt(halPin), magnet_detect, FALLING);
+  Serial.println("Starting");
+  // Interrupt variable from before
+  if (interrupt) {
+    Serial.println("Interrupt hit");
+    int i = 0;
+    delay(3000);
+    // While loop to test if the room is occupied
+    // Keeps repeating while someone is in the room
+    // If no one is increase the counter (i)
+    // This keeps false triggerings down in case of incorrect occupation status
+    while (i <= 5) {
+        bool occup = isRoomOccup();
+        if (occup) {
+            mqtt.publish(topicStatus, "true");
+            Serial.println("Sent Image");
+            Serial.println(i);
+        } else {
+            i++;
+            Serial.println(i);
+        }
     }
-amg.readPixels(pixels);
-    // Serial.print("[");
-    for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
-      fahrenheit = (pixels[i-1] * 9.0) / 5.0 + 32;
-      Serial.print(fahrenheit);
-      Serial.print(", ");
-      if( i%8 == 0 ) Serial.println();
-      if (fahrenheit > roomBaseline + .80) count++;
-    }
-    // Serial.println("]");
-    if(count >= 16) {
-        Serial.println(roomBaseline);
-        Serial.println("The room is occupied");
-        mqtt.publish(topicStatus, "true");
-        roomOccup = true;
-    } else {
-        Serial.println(roomBaseline);
-        Serial.println("The room is NOT occupied");
-        mqtt.publish(topicStatus, "false");
-        roomOccup = false;
-    }
-
-    count = 0;
-    //delay 5 seconds
-    delay(7000);
-  
+    interrupt = false;
+  }
+  mqtt.publish(topicStatus, "false");
+  //delay 5 seconds
+  delay(5000);
 }
+// 

@@ -16,6 +16,34 @@ fetch('/userData')
                                                             <div id="passwordContainer"> <br> <button type="button" onclick="showPassword()" id="passwordToggle">Show Password</button> </div>`;
     })
     .catch(error => console.error('Error:', error));
+
+function updateData(){
+    fetch('/userData')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to retrieve user data');
+        }
+        return response.json();
+    })
+    .then(userData => {
+        document.getElementById('userData').innerHTML = `${userData.first_name}'s Profile`;
+        document.getElementById('userInfo').innerHTML = `<b>Username:</b> ${userData.username} <br>`; 
+        document.getElementById('userInfo').innerHTML += `<b>Name:</b> ${userData.first_name} ${userData.last_name} <br>`;
+        document.getElementById('userInfo').innerHTML += `<b>Email:</b> ${userData.email} <br>`;
+        document.getElementById('userInfo').innerHTML += `<label for="password"> <b>Password:</b> </label> <input type="password" id="password1" value="${userData.password}" readonly> 
+                                                            <div id="passwordContainer"> <br> <button type="button" onclick="showPassword()" id="passwordToggle">Show Password</button> </div>`;
+        emptyForm();
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function emptyForm() {
+    // Your update logic here
+    
+    // Reset the form after submission
+    document.getElementById("updateEmailForm").reset();
+}
+
 // The script shows the by default hidden password.
 function showPassword() {
     var passwordField = document.getElementById("password1");

@@ -14,7 +14,16 @@
 //         console.log(userData);
 //     })
 //     .catch(error => console.error('Error:', error));
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listener for start and end time selects
+    document.getElementById("timeSelectStart").addEventListener("change", checkButton);
+    document.getElementById("timeSelectEnd").addEventListener("change", checkButton);
 
+    // Add event listeners for room buttons
+    document.querySelectorAll('.room-button').forEach(button => {
+        button.addEventListener('click', checkButton);
+    });
+});
 
 window.addEventListener('load', fetchHallsAndDisplay);
         // Function to fetch hall names from the server and display them as buttons
@@ -58,22 +67,42 @@ window.addEventListener('load', fetchHallsAndDisplay);
                  container.innerHTML = ''; // Clear container content
              });
          }
-
-        document.getElementById("timeSelectStart").addEventListener("change", checkButton);
-        document.getElementById("timeSelectEnd").addEventListener("change", checkButton);
-
+         function logout() {
+            fetch('/logout')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to logout');
+                    }
+                    // Redirect to login page after logout
+                    window.location.href = '/';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
         function checkButton() {
+            console.log('Using Function');
             let startTime = document.getElementById("timeSelectStart").value;
             let endTime = document.getElementById("timeSelectEnd").value;
+            let activeRoomButton = document.querySelector('.room-button.active');
+
+            if (!activeRoomButton) {
+                document.getElementById("submit").disabled = true;
+                document.getElementById("submit").classList.add("disabled");
+                console.log('button locked');
+                return;
+            }
+        
             if (startTime >= endTime) {
                 document.getElementById("submit").disabled = true;
                 document.getElementById("submit").classList.add("disabled");
                 console.log('button locked');
-            } else {
-                document.getElementById("submit").disabled = false;
-                document.getElementById("submit").classList.remove("disabled");
-                console.log('button unlocked');
+                return;
             }
+        
+            document.getElementById("submit").disabled = false;
+            document.getElementById("submit").classList.remove("disabled");
+            console.log('button unlocked');
         }
 
         // Function to fetch rooms for a specific hall
@@ -99,6 +128,7 @@ window.addEventListener('load', fetchHallsAndDisplay);
                            button.classList.remove('active'); // Remove "active" class from all room buttons
                         });
                         roomButton.classList.add('active'); // Add "active" class to the clicked room button
+                        checkButton(); // Call checkButton function here
                     });
                     roomContainer.appendChild(roomButton);
                 });
@@ -113,6 +143,7 @@ window.addEventListener('load', fetchHallsAndDisplay);
                         button.classList.remove('active'); // Remove "active" class from all room buttons
                     });
                     roomButton.classList.add('active'); // Add "active" class to the clicked room button
+                    checkButton(); // Call checkButton function here
                 });
                 roomContainer.appendChild(roomButton);
 
@@ -121,15 +152,91 @@ window.addEventListener('load', fetchHallsAndDisplay);
                 console.error('Error fetching room occupancy:', error);
             }
         }
+        function showNotification() {
+            var notification = document.getElementById('notification');
+            notification.style.display = 'block';
+            setTimeout(function() {
+              notification.style.display = 'none';
+            }, 4000); // Notification will disappear after 3 seconds
+          }
+        // Function to actually submit the time to watch the Room
         async function submitWatchTime() {
             const hallName = document.getElementById('hallList').querySelector('.active').textContent;
             const roomNumText = document.getElementById(`${hallName}-rooms`).querySelector('.active').textContent;
+            const startTime = document.getElementById('timeSelectStart').value;
+            const endTime = document.getElementById('timeSelectEnd').value;
+            const day = document.getElementById('daySelect').value;
+            console.log(day);
+
             let roomNum;
+            console.log(hallName);
+            console.log(roomNumText);
             if (roomNumText !== "All") {
                 roomNum = parseInt(roomNumText.match(/\d+$/)[0]);
                 console.log(roomNum);
+                try {
+                    const response = await fetch('/submitWatchRoom', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        room_hall: hallName,
+                        room_num: roomNum,
+                        start_time: startTime,
+                        end_time: endTime,
+                        day: day
+                    })
+                });
+            
+                if (!response.ok) {
+                    throw new Error('Failed to post data');
+                }
+            
+                const responseData = await response.json();
+            
+                // Display the response message in an alert
+                alert(responseData.message);
+                } catch (error) {
+                    console.error('Error Confirming Email Notifications:', error);
+                    alert('Failed to submit time for email notifications. Please try again later.');
+                }
+            } else {
+                try {
+                    const response = await fetch('/submitWatchRoom', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        room_hall: hallName,
+                        room_num: roomNumText,
+                        start_time: startTime,
+                        end_time: endTime,
+                        day: day
+                    })
+                });
+            
+                if (!response.ok) {
+                    throw new Error('Failed to post data');
+                }
+            
+                const responseData = await response.json();
+            
+                // Display the response message in an alert
+                alert(responseData.message);
+                } catch (error) {
+                    console.error('Error Confirming Email Notifications:', error);
+                    alert('Failed to submit time for email notifications. Please try again later.');
+                }
             }
-            console.log(hallName);
-            console.log(roomNumText);
 
+        }
+        function reportRoom() {
+            var overlay = document.getElementById('overlay');
+            overlay.style.display = 'flex';
+        
+            setTimeout(function() {
+                overlay.style.display = 'none';
+            }, 2000);
         }
