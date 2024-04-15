@@ -1,5 +1,5 @@
 /*!
- * Teo & Robbie B
+ * Teo
  */
 body {
     margin: 0;
@@ -24,6 +24,7 @@ header {
     height: 10vh;
     display: flex;
     justify-content: center;
+        
     }
 nav{
         display: inline-block;
@@ -49,4 +50,8 @@ nav li a {
     transition: color 0.3s ease;
     padding: 10px 15px; 
     }
+
+header nav ul li:hover {
+    text-decoration: underline;
+}
     

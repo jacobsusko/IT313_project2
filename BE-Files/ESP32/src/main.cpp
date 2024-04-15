@@ -1,10 +1,3 @@
-// Wiring:
-// ESP32       | AMG8833      
-// 3V3 (3.3V)  | 3VO           
-// GND         | GND           
-// D21         | SDA          
-// D22         | SCL           
-
 
 #include <WiFi.h>
 #include <Arduino.h>
@@ -128,7 +121,13 @@ float calibrate() {
 
 // Function to See if Room is Occupied or not Based on Calibration and Calculation of 
 // how many "Pixels" are above the Calbrated Threshold
-bool isRoomOccup() {
+bool isRoomOccup(int x) {
+    if(roomBaseline == 0.0) {
+        roomBaseline = calibrate();
+    } else if(!roomOccup && millis()-lastCal >= SAMPLING) {
+        lastCal = millis();
+        roomBaseline = calibrate();
+    }
     amg.readPixels(pixels);
     // Serial.print("[");
     for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
@@ -136,13 +135,17 @@ bool isRoomOccup() {
       Serial.print(fahrenheit);
       Serial.print(", ");
       if( i%8 == 0 ) Serial.println();
-      if (fahrenheit > roomBaseline + 0.75) count++;
+      if (fahrenheit > roomBaseline + 4) count++;
     }
     // Serial.println("]");
-    if(count >= 13) {
+    if(count >= x) {
         Serial.println(roomBaseline);
         Serial.println("The room is occupied");
         roomOccup = true;
+    } else if(count >= (x - 1)){
+        mqtt.publish(topicStatus, "Not really sure you know man it is more like a vibe, ill try again");
+        delay(5000);
+        roomOccup = isRoomOccup(x - 2);
     } else {
         Serial.println(roomBaseline);
         Serial.println("The room is NOT occupied");
@@ -172,46 +175,6 @@ void setup() {
     ESP.restart();
   }
 
-  // Port defaults to 3232
-  // ArduinoOTA.setPort(3232);
-
-  // Hostname defaults to esp3232-[MAC]
-  // ArduinoOTA.setHostname("myesp32");
-
-  // No authentication by default
-  // ArduinoOTA.setPassword("admin");
-
-  // Password can be set with it's md5 value as well
-  // MD5(admin) = 21232f297a57a5a743894a0e4a801fc3
-  // ArduinoOTA.setPasswordHash("21232f297a57a5a743894a0e4a801fc3");
-
-  ArduinoOTA
-    .onStart([]() {
-      String type;
-      if (ArduinoOTA.getCommand() == U_FLASH)
-        type = "sketch";
-      else // U_SPIFFS
-        type = "filesystem";
-
-      // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
-      Serial.println("Start updating " + type);
-    })
-    .onEnd([]() {
-      Serial.println("\nEnd");
-    })
-    .onProgress([](unsigned int progress, unsigned int total) {
-      Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
-    })
-    .onError([](ota_error_t error) {
-      Serial.printf("Error[%u]: ", error);
-      if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
-      else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
-      else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
-      else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
-      else if (error == OTA_END_ERROR) Serial.println("End Failed");
-    });
-
-  ArduinoOTA.begin();
 
   // Outputs IP Address
   Serial.println("Ready");
@@ -232,13 +195,14 @@ void setup() {
   }
   vSTATUSINTERVAL = STATUSINTERVAL;
   vAMGSAMPLING = AMGSAMPLING;
+  roomBaseline = 0.0;
+  roomOccup = isRoomOccup(5);
 }
 
 void loop() {
   ArduinoOTA.handle();
   // Handle MQTT connection/reconnection
   if (mqtt_server!="") {
-    Serial.println("MQTT Start");
     if (!mqtt.connected()) {
       Serial.println("MQTT Reconnecting");
       reconnect();
@@ -247,30 +211,33 @@ void loop() {
   }
   // if about magnet sensor
   attachInterrupt(digitalPinToInterrupt(halPin), magnet_detect, FALLING);
-  Serial.println("Starting");
   // Interrupt variable from before
   if (interrupt) {
     Serial.println("Interrupt hit");
-    int i = 0;
-    roomBaseline = calibrate();
-    delay(5000);
-    // While loop to test if the room is occupied
+    int counter = 0;
+    delay(3000);
+    // For loop to test if the room is occupied
     // Keeps repeating while someone is in the room
     // If no one is increase the counter (i)
     // This keeps false triggerings down in case of incorrect occupation status
-    while (i <= 5) {
-        bool occup = isRoomOccup();
-        if (occup) {
-            mqtt.publish(topicStatus, "true");
-            Serial.println("Sent Image");
-            i = 0;
-            Serial.println("Reset counter");
-        } else {
-            i++;
-            Serial.println(i);
-        }
+    for(int i = 0; i <= 5; i++) {
+      bool occup = isRoomOccup(5);
+      if(occup) {
+        counter++;
+      }
+    }
+    
+    if(counter > 3) {
+      // if (roomOccup == false) {
+        roomOccup = true;
+        mqtt.publish(topicStatus, "true");
+      // } 
+    } else {
+      // if(roomOccup == true) {
+        roomOccup = false;
+        mqtt.publish(topicStatus, "false");
+      // }
     }
     interrupt = false;
   }
-  mqtt.publish(topicStatus, "false");
 }

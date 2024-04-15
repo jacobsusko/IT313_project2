@@ -50,7 +50,7 @@ async function login(req, res) {
 
         // If not found in either table, return invalid message
         // return res.send("<div align='center'><h2>Invalid Username or password</h2></div><br><br><div align='center'><a href='./index.html'>login again<a><div>");
-        return res.status(200).send(`
+        return res.status(401).send(`
                     <script>
                         alert('Invalid Username or password');
                         window.location.href = './signup.html';
@@ -94,7 +94,7 @@ async function signup(req, res) {
 
         if (studentResult.rows.length > 0 || employeeResult.rows.length > 0) {
             // res.send("<div align ='center'><h2>Username/Email already in use</h2></div><br><br><div align='center'><a href='./signup.html'>Register Again<a><div>");
-            res.status(200).send(`
+            res.status(401).send(`
             <script>
                 alert('Username/Email already in use');
                 window.location.href = './signup.html';
@@ -109,7 +109,7 @@ async function signup(req, res) {
                     client.end();
                     console.log(err);
                     // res.send("<div align ='center'><h2>Internal Server Error</h2></div><br><br><div align='center'><a href='./signup.html'>Register Again<a><div>");
-                    res.status(200).send(`
+                    res.status(401).send(`
                     <script>
                         alert('Internal Server Error');
                         window.location.href = './signup.html';
