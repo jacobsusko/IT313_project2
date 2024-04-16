@@ -1,39 +1,39 @@
 <!-- 
      Teo Z.
  -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="Teo Z" content="width=device-width, initial-scale=1.0">
-    <title>Signup</title>
-    <link href="index.css" rel="stylesheet">
-    <link href="signup.css" rel="stylesheet">
-    <script src="signup.js"></script>
-</head>
-<body>
-    <header>
-    <h1>Welcome!</h1>
-   
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="Teo Z" content="width=device-width, initial-scale=1.0">
+     <title>Signup</title>
+     <link href="index.css" rel="stylesheet">
+     <link href="signup.css" rel="stylesheet">
+     <script src="signup.js"></script>
+ </head>
+ <body>
+     <header>
+     <h1>Welcome!</h1>
     
-   
-
-</header>
-    <section>
-        <h2>Create Account</h2>
-        <form id="createaccount" action="/signup" method="POST">
-            <input type="text" id="email" name="email" placeholder="Email" required>
-            <input type="text" id="fname" name="fname" placeholder="First Name" required>
-            <input type="text" id="lname" name="lname" placeholder="Last Name" required>
-            <input type="int" id="username" name="username" placeholder="Username" required>
-            <input type="password" id="password" name="password" placeholder="Password" required oninput="checkpasswords()">
-            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required oninput="checkpasswords()">
-            <input id= "register" type="submit" value="Register">
-            <p id = "message"></p>
-           
-        </form>
-        <a id="backButton" href="index.html">Back to Login</a>
-    </section> 
+     
     
-</body>
-</html>
+ 
+ </header>
+     <section>
+         <h2>Create Account</h2>
+         <form id="createaccount" action="/signup" method="POST" onsubmit="return validateForm()">
+             <input type="text" id="email" name="email" placeholder="Email" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}">
+             <input type="text" id="fname" name="fname" placeholder="First Name" required>
+             <input type="text" id="lname" name="lname" placeholder="Last Name" required>
+             <input type="int" id="username" name="username" placeholder="Username" required>
+             <input type="password" id="password" name="password" placeholder="Password" required oninput="checkpasswords()">
+             <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required oninput="checkpasswords()">
+             <input id= "register" type="submit" value="Register">
+             <p id = "message"></p>
+            
+         </form>
+         <a id="backButton" href="index.html">Back to Login</a>
+     </section> 
+     
+ </body>
+ </html>

@@ -207,6 +207,10 @@ select:focus {
 #hallList {
     min-height: 90vh;
 }
+.room-button.active {
+    border: 2px solid #450084; /* Add your preferred border style */
+}
+
 
 .overlay {
     display: none;
@@ -222,7 +226,7 @@ select:focus {
 }
 .success-box {
     position: fixed;
-        top: 40%;
+        top: 75%;
         left: 57.5%;
         transform: translate(-50%, -50%);
         background-color: white;
@@ -231,5 +235,5 @@ select:focus {
         border-radius: 10px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         height: auto;
-        font-size: 40px;
+        font-size: x-large;
 }

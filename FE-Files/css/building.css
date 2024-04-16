@@ -148,6 +148,49 @@ div{
     font-size: 2vh;
 }
 
+.resetButton{
+    width: 12vw;
+    border-radius: 5px;
+    position: relative;
+}
+
+.resetButton:hover::after {
+    /* Add styles for the resetButton and its pseudo-element when hovered */
+    content: "Use this button whenever the issue with the room is resolved.";
+    position: absolute;
+    display: inline;
+    bottom: 120%;
+    left: 30%;
+    transform: translateX(-50%);
+    background-color: #000;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    font-size: 2vh;
+}
+.updateButton{
+    width: 12vw;
+    border-radius: 5px;
+    position: relative;
+}
+
+.updateButton:hover::after {
+    /* Add styles for the updateButton and its pseudo-element when hovered */
+    content: "Use this button to update the room occupancy.";
+    position: absolute;
+    display: inline;
+    bottom: 120%;
+    left: 30%;
+    transform: translateX(-50%);
+    background-color: #000;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    font-size: 2vh;
+}
+
 
 .forms{
     display: flex;
@@ -155,19 +198,6 @@ div{
     width: 32vw;
     margin: auto;
 }
-/* Add your CSS styles here */
-/* Existing CSS styles are retained */
-.helpButton {
-    background: none;
-    border: none;
-    font-size: inherit;
-    color: inherit;
-    cursor: pointer;
-    padding: 0;
-    margin: 0;
-}
-
-
 .overlay {
     display: none;
     position: fixed;
