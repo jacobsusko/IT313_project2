@@ -2,7 +2,7 @@
 //  Buildings.swift
 //  jmustudyhall
 //
-//  Created by Holly and Teo
+//  Created by Holly
 //
 import UIKit
 
