@@ -74,10 +74,6 @@ class Rooms: UIViewController {
         }
     }
     
-    @objc func roomButtonTapped(_ sender: UIButton) {
-        // Handle room button tap if needed
-    }
-    
     @objc func reportButtonTapped(_ sender: UIButton) {
         print("Report button tapped") // Add this line to print a message
         
