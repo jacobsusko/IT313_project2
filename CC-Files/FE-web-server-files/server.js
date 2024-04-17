@@ -15,7 +15,7 @@ app.use(session({
 }));
 
 // Create HTTPS server
-const server = https.createServer({
+const httpsServer = https.createServer({
     key: fs.readFileSync('privkey.pem'),
     cert: fs.readFileSync('fullchain.pem'),
     passphrase: 'C3n7r@1^73@NN'
@@ -25,38 +25,38 @@ const server = https.createServer({
 const httpServer = http.createServer(app);
 
 
-app.use((req, res, next) => {
-    // List of specific URLs to redirect
-    const urlsToRedirect = ['http://3.128.186.180', 'http://3.128.186.180:80', 'http://3.128.186.180:443', 'https://3.128.186.180', 'https://3.128.186.180:80', 'https://3.128.186.180:443']; // Add your desired URLs here
+// app.use((req, res, next) => {
+//     // List of specific URLs to redirect
+//     const urlsToRedirect = ['http://3.128.186.180', 'http://3.128.186.180:80', 'http://3.128.186.180:443', 'https://3.128.186.180', 'https://3.128.186.180:80', 'https://3.128.186.180:443']; // Add your desired URLs here
 
-    // Check if the requested URL path is in the list of URLs to redirect
-    if (urlsToRedirect.includes(req.url)) {
-        // Redirect the client to the desired URL
-        const redirectTo = 'https://www.jmustudyhall.com'; // Replace with your desired URL
-        return res.redirect(301, redirectTo);
-    }
+//     // Check if the requested URL path is in the list of URLs to redirect
+//     if (urlsToRedirect.includes(req.url)) {
+//         // Redirect the client to the desired URL
+//         const redirectTo = 'https://www.jmustudyhall.com'; // Replace with your desired URL
+//         return res.redirect(301, redirectTo);
+//     }
 
-    // If the requested URL is not in the list, proceed with normal request handling
-    next();
-});
+//     // If the requested URL is not in the list, proceed with normal request handling
+//     next();
+// });
 
-app.use((req, res, next) => {
-    if (req.secure) {
-        next();
-    } else {
-        const expectedHostname = 'www.jmustudyhall.com';
-        res.redirect('https://' + expectedHostname + req.url);
-    }
-});
+// app.use((req, res, next) => {
+//     if (req.secure) {
+//         next();
+//     } else {
+//         const expectedHostname = 'www.jmustudyhall.com';
+//         res.redirect('https://' + expectedHostname + req.url);
+//     }
+// });
 
-app.use((req, res, next) => {
-    if (req.secure && (req.hostname === '3.128.186.180' || req.hostname === '3.128.186.180:443')) {
-        const expectedHostname = 'www.jmustudyhall.com';
-        res.redirect('https://' + expectedHostname + req.url);
-    } else {
-        next();
-    }
-});
+// app.use((req, res, next) => {
+//     if (req.secure && (req.hostname === '3.128.186.180' || req.hostname === '3.128.186.180:443')) {
+//         const expectedHostname = 'www.jmustudyhall.com';
+//         res.redirect('https://' + expectedHostname + req.url);
+//     } else {
+//         next();
+//     }
+// });
 
 // Use routes
 app.use('/', routes);
@@ -67,6 +67,6 @@ httpServer.listen(80, () => {
     console.log('HTTP server running on port 80');
 });
 
-server.listen(443, function(){
+httpsServer.listen(443, function(){
     console.log("HTTPS server is listening on port 443");
 });

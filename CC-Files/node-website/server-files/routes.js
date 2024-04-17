@@ -3,7 +3,8 @@ const { express, path, Client } = require('./modules');
 const router = express.Router();
 const { login, signup, logout, requireLogin, requireLoginEmp, requireEitherLogin, signupEmp } = require('./userController');
 const { getUserData, getHalls, getRoomOccupancy, getCredentials, updateRoom, updateFlag, updateEmail, 
-    updatePassword, resetFlag, scheduleRoom, scheduledRooms, scheduledRoomPerHall, submitWatchRoom } = require('./dataController');
+    updatePassword, resetFlag, scheduleRoom, scheduledRooms, scheduledRoomPerHall, submitWatchRoom, 
+    hallAverageOccupancy} = require('./dataController');
 
 // Home page route
 router.get('/', (req, res) => {
@@ -28,6 +29,9 @@ router.get('/building.html', requireEitherLogin, (req, res) => {
 });
 router.get('/UserSettings.html', requireEitherLogin, (req, res) => {
     res.sendFile(path.join(__dirname, '../express', 'UserSettings.html'));
+});
+router.get('/averageOccupancy.html', requireEitherLogin, (req, res) => {
+    res.sendFile(path.join(__dirname, '../express', 'averageOccupancy.html'));
 });
 router.get('/schedulling.html', requireLogin, (req, res) => {
     res.sendFile(path.join(__dirname, '../express', 'schedulling.html'));
@@ -60,6 +64,9 @@ router.post('/scheduledRooms', requireLogin, scheduledRooms);
 router.get('/scheduledRoomPerHall', requireEitherLogin, scheduledRoomPerHall);
 
 router.post('/submitWatchRoom', requireLogin, submitWatchRoom);
+
+router.get('/hallAverageOccupancy', requireEitherLogin, hallAverageOccupancy);
+
 
 
 

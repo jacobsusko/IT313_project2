@@ -95,6 +95,10 @@ header {
     border: none;
     text-decoration: underline;
 }
+.room-button.active {
+    border: 2px solid #450084; /* Add your preferred border style */
+}
+
 
 #times {
     display: flex;

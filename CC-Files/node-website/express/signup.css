@@ -52,6 +52,9 @@ section, div{
   width: 600px;
   height: 50vh;
 }
+#message{
+  text-align:center;
+}
 @media only screen and (max-width: 1000px) {
   section, div{
    background-color: #dfd2aa;

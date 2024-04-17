@@ -67,7 +67,19 @@ window.addEventListener('load', fetchHallsAndDisplay);
                  container.innerHTML = ''; // Clear container content
              });
          }
-
+         function logout() {
+            fetch('/logout')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to logout');
+                    }
+                    // Redirect to login page after logout
+                    window.location.href = '/';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
         function checkButton() {
             console.log('Using Function');
             let startTime = document.getElementById("timeSelectStart").value;
@@ -93,54 +105,61 @@ window.addEventListener('load', fetchHallsAndDisplay);
             console.log('button unlocked');
         }
 
-        // Function to fetch rooms for a specific hall
-        async function fetchRooms(hall) {
-            try {
-                clearRoomContainers(); // Clear all room containers
-                const room_response = await fetch(`/getRoomOccupancy?hall_name=${hall}`);
-                const rooms = await room_response.json();
-                console.log('Rooms for hall:', rooms);
+       // Function to fetch rooms for a specific hall
+async function fetchRooms(hall) {
+    try {
+        clearRoomContainers(); // Clear all room containers
+        const room_response = await fetch(`/getRoomOccupancy?hall_name=${hall}`);
+        const rooms = await room_response.json();
+        console.log('Rooms for hall:', rooms);
 
-                const roomContainer = roomContainers[hall];
+        const roomContainer = roomContainers[hall];
 
-                // Loop through each room and create a button for each
-                rooms.forEach(room => {
-                    const roomButton = document.createElement('button');
-                    roomButton.textContent = `${hall} - ${room.room_num}`; // Combine hall name and room number
-                    roomButton.classList.add('room-button'); // Add a class to the room button
-                    roomButton.addEventListener('click', () => {
-                       // Handle room button click if needed
-                       //  fetchTimes(hall, room.room_num);
-                       const roomButtons = document.querySelectorAll('.room-button');
-                       roomButtons.forEach(button => {
-                           button.classList.remove('active'); // Remove "active" class from all room buttons
-                        });
-                        roomButton.classList.add('active'); // Add "active" class to the clicked room button
-                        checkButton(); // Call checkButton function here
-                    });
-                    roomContainer.appendChild(roomButton);
+        // Loop through each room and create a button for each
+        rooms.forEach(room => {
+            const roomButton = document.createElement('button');
+            roomButton.textContent = `${hall} - ${room.room_num}`; // Combine hall name and room number
+            roomButton.classList.add('room-button'); // Add a class to the room button
+            roomButton.addEventListener('click', () => {
+               // Handle room button click if needed
+               const roomButtons = document.querySelectorAll('.room-button');
+               roomButtons.forEach(button => {
+                   button.classList.remove('active'); // Remove "active" class from all room buttons
                 });
-                const roomButton = document.createElement('button');
-                roomButton.textContent = "All"; // Combine hall name and room number
-                roomButton.classList.add('room-button'); // Add a class to the room button
-                roomButton.addEventListener('click', () => {
-                    // Handle room button click if needed
-                    //  fetchTimes(hall, room.room_num);
-                    const roomButtons = document.querySelectorAll('.room-button');
-                    roomButtons.forEach(button => {
-                        button.classList.remove('active'); // Remove "active" class from all room buttons
-                    });
-                    roomButton.classList.add('active'); // Add "active" class to the clicked room button
-                    checkButton(); // Call checkButton function here
-                });
-                roomContainer.appendChild(roomButton);
+                roomButton.classList.add('active'); // Add "active" class to the clicked room button
+                checkButton(); // Call checkButton function here
+            });
+            roomContainer.appendChild(roomButton);
+        });
 
-            } catch (error) {
-                // Handle errors if any
-                console.error('Error fetching room occupancy:', error);
-            }
-        }
+        // Create "All" room button
+        const allRoomButton = document.createElement('button');
+        allRoomButton.textContent = "All"; // Text for the "All" room button
+        allRoomButton.classList.add('room-button'); // Add a class to the "All" room button
+        allRoomButton.addEventListener('click', () => {
+            // Handle "All" room button click if needed
+            const roomButtons = document.querySelectorAll('.room-button');
+            roomButtons.forEach(button => {
+                button.classList.remove('active'); // Remove "active" class from all room buttons
+            });
+            allRoomButton.classList.add('active'); // Add "active" class to the "All" room button
+            checkButton(); // Call checkButton function here
+        });
+        roomContainer.appendChild(allRoomButton);
 
+    } catch (error) {
+        // Handle errors if any
+        console.error('Error fetching room occupancy:', error);
+    }
+}
+
+        function showNotification() {
+            var notification = document.getElementById('notification');
+            notification.style.display = 'block';
+            setTimeout(function() {
+              notification.style.display = 'none';
+            }, 4000); // Notification will disappear after 3 seconds
+          }
         // Function to actually submit the time to watch the Room
         async function submitWatchTime() {
             const hallName = document.getElementById('hallList').querySelector('.active').textContent;
@@ -213,4 +232,12 @@ window.addEventListener('load', fetchHallsAndDisplay);
                 }
             }
 
+        }
+        function reportRoom() {
+            var overlay = document.getElementById('overlay');
+            overlay.style.display = 'flex';
+        
+            setTimeout(function() {
+                overlay.style.display = 'none';
+            }, 2000);
         }

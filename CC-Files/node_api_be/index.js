@@ -53,7 +53,14 @@ app.put('/room_occupancy/:hall/:room', authenticate, async (req, res) => {
         `;
       const values = [occupancy, hall, parseInt(room)];
       await client.query(query, values);
-
+      
+      // Possible solutions if BE can not find solution to constant sending
+        // only update when room being set to occupied as True:
+          // will result in no repeated emails being sent out since they won't be sent while the room is occupied
+          // will still be ready to send email once room is set to empty and will not reset
+        // only update when there is change in room state (false > true or true > false)
+          // will work
+          // will require additional get call to database
       const query2 = `
         UPDATE occupancy."Watch_Room"
         SET already_emailed = false

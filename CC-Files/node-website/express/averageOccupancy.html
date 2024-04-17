@@ -1,0 +1,42 @@
+<!-- 
+    Created by David
+ -->
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="David G" content="width=device-width, initial-scale=1.0">
+     <title>Buildings</title>
+     <link href="style.css" rel="stylesheet">
+     <link href="averageOccupancy.css" rel="stylesheet">
+     <script src="averageOccupancy.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+ 
+ </head>
+ <body>
+     <header>
+         <h1> Average Occupancy of Halls</h1>
+         <nav class ="navlink">
+             <ul>
+                <li class="navlink" id="building"><a href="building.html">Buildings</a></li>
+                <li class="navlink" id="schedule"><a href="schedulling.html">Scheduling</a></li>
+                 <li class="navlink" id="RoomEmail"><a href="watchroom.html">Notifications</a></li>
+                 <li class="navlink" id="addEmp"><a href="newadmin.html">Add an Employee</a></li>
+                 <li class="navlink" id="settings"><a href="UserSettings.html">Settings</a></li>
+                
+             </ul>
+         </nav>
+         
+             <button onclick ="logout()" id ="logout">Log out</button>
+ 
+             
+     </header>
+     <main>
+ 
+     <div id="hallList"></div>
+     <div id="AverageOccupancy"></div>
+ </main>
+ 
+ 
+ </body>
+ </html>

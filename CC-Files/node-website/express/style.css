@@ -50,4 +50,8 @@ nav li a {
     transition: color 0.3s ease;
     padding: 10px 15px; 
     }
+
+header nav ul li:hover {
+    text-decoration: underline;
+}
     

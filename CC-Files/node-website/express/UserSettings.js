@@ -1,4 +1,5 @@
 // Done by Austin
+
 // Make an HTTP request to retrieve user data
 fetch('/userData')
     .then(response => {
@@ -16,6 +17,35 @@ fetch('/userData')
                                                             <div id="passwordContainer"> <br> <button type="button" onclick="showPassword()" id="passwordToggle">Show Password</button> </div>`;
     })
     .catch(error => console.error('Error:', error));
+async function getCredentials() {
+    try {
+        const response = await fetch('/getCredentials');
+        if (!response.ok) {
+            throw new Error('Failed to logout');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error: ', error)
+    }
+}
+
+async function hidePages() {
+    console.log("test")
+    const credentials = await getCredentials();
+    if (credentials.loggedInEmp) {
+        var schedule = document.getElementById('schedule');
+        schedule.style.display = 'none';
+        var email = document.getElementById('RoomEmail');
+        email.style.display = 'none';
+    }
+    if (credentials.loggedIn) {
+        var addEmp = document.getElementById('addEmp');
+        addEmp.style.display = 'none';
+    }
+}
+
+window.addEventListener('load', hidePages);
+
 
 function updateData(){
     fetch('/userData')
@@ -32,8 +62,16 @@ function updateData(){
         document.getElementById('userInfo').innerHTML += `<b>Email:</b> ${userData.email} <br>`;
         document.getElementById('userInfo').innerHTML += `<label for="password"> <b>Password:</b> </label> <input type="password" id="password1" value="${userData.password}" readonly> 
                                                             <div id="passwordContainer"> <br> <button type="button" onclick="showPassword()" id="passwordToggle">Show Password</button> </div>`;
+        emptyForm();
     })
     .catch(error => console.error('Error:', error));
+}
+
+function emptyForm() {
+    // Your update logic here
+    
+    // Reset the form after submission
+    document.getElementById("updateEmailForm").reset();
 }
 
 // The script shows the by default hidden password.
@@ -50,14 +88,6 @@ function showPassword() {
     }
 }
 
-async function hidePages() {
-    const credentials = await getCredentials();
-    if (credentials.loggedInEmp) {
-        var schedule = document.getElementById('schedule');
-        schedule.style.display = 'none';
-    }
-}
-window.addEventListener('load', hidePages);
 
 // The logout script same one as used on the buildings page.
 function logout() {

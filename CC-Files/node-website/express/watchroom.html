@@ -13,15 +13,16 @@
  </head>
  <body>
      <header>
-         <h1 id="userData">Room Email Notifications</h1>
+         <h1 id="userData">Notifications</h1>
          <nav class ="navlink">
              <ul>
                 <li class="navlink" id="building"><a href="building.html">Buildings</a></li>
+                <li class="navlink" id="avgOccupancy"><a href="averageOccupancy.html">Avg. Occupancy</a></li>
                 <li class="navlink" id="schedule"><a href="schedulling.html">Scheduling</a></li>
                 <li class="navlink" id="settings"><a href="UserSettings.html">Settings</a></li>
              </ul>
          </nav>
-             <button onclick ="logout()" id ="logout">Log out</button>
+            <button onclick ="logout()" id ="logout">Log out</button>
  
              
      </header>
@@ -71,7 +72,12 @@
                 <option value="20:00:00">8:00 P.M.</option>
             </select><br>
 
-            <button onclick="submitWatchTime()" id="submit" class="submit-button disabled" disabled>Submit Room Watch Time</button>
+            <button onclick="submitWatchTime(), reportRoom()" id="submit" class="submit-button disabled" disabled>Submit Room Watch Time</button> 
+            <div class="overlay" id="overlay">
+                <div class="success-box">
+                    Success
+                </div>
+            </div>
         </div>
     </main>
     <script src="watchroom.js"></script> 

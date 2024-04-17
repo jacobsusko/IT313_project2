@@ -43,6 +43,7 @@ async function getUserData(req, res) {
             return res.status(404).json({ error: 'User not found'});
         }
         }
+        console.log(userData);
         res.json(userData);
 
     } catch (err) {
@@ -71,6 +72,7 @@ async function getHalls(req, res) {
         if (result.rows.length > 0) {
             const halls = result.rows.map(row => row.hall_name);
             await client.end();
+            console.log(halls);
             res.json(halls);
         } else {
             res.status(404).json({ error: 'No Halls found'});
@@ -138,13 +140,14 @@ async function updateRoom(req, res){
         await client.query(query, params);
 
         await client.end();
+        console.log('SUCCESS!');
 
-        res.status(200).send(`
-        <script>
-            alert('Room occupancy updated successfully.');
-            window.location.href = './building.html';
-        </script>
-        `)
+        // res.status(200).send(`
+        // <script>
+        //     alert('Room occupancy updated successfully.');
+        //     window.location.href = './building.html';
+        // </script>
+        // `)
     } catch (error) {
         console.error('Error updating room:', error);
         res.status(500).send('Internal Server Error');
@@ -175,13 +178,14 @@ async function resetFlag(req, res){
         await client.query(query, params);
 
         await client.end();
+        console.log('SUCCESS!');
 
-        res.status(200).send(`
-        <script>
-            alert('Flag reset successfully.');
-            window.location.href = './building.html';
-        </script>
-    `)
+    //     res.status(200).send(`
+    //     <script>
+    //         alert('Flag reset successfully.');
+    //         window.location.href = './building.html';
+    //     </script>
+    // `)
     } catch (error) {
         console.error('Error updating room:', error);
         res.status(500).send('Internal Server Error');
@@ -212,19 +216,21 @@ async function updateFlag(req, res){
         await client.query(query, params);
 
         await client.end();
-
+        console.log('SUCCESS!');
+        
         // res.status(200).send(".<br><div align='center'><a href='./building.html'>Building Page<a><div>");
-        res.status(200).send(`
-            <script>
-                alert('Room flag updated successfully.');
-                window.location.href = './building.html';
-            </script>
-        `);
+        // res.status(200).send(`
+        //     <script>
+        //         alert('Room flag updated successfully.');
+        //         window.location.href = './building.html';
+        //     </script>
+        // `);
     } catch (error) {
         console.error('Error updating room:', error);
         res.status(500).send('Internal Server Error');
     }
 }
+
 
 // Author: Austin, with assistance from David
 async function updateEmail(req, res){
@@ -247,7 +253,8 @@ async function updateEmail(req, res){
         await client.query(query, params);
 
         await client.end();
-
+        console.log('SUCCESS!');
+        
         
         // res.status(200).send(`
         //     <script>
@@ -288,13 +295,14 @@ async function updatePassword(req, res){
         await client.query(query, params);
 
         await client.end();
+        console.log('SUCCESS!');
 
-        res.status(200).send(`
-            <script>
-                alert('Password updated successfully.');
-                window.location.href = './UserSettings.html';
-            </script>
-        `);
+        // res.status(200).send(`
+        //     <script>
+        //         alert('Password updated successfully.');
+        //         window.location.href = './UserSettings.html';
+        //     </script>
+        // `);
 
     } catch (error) {
         console.error('Error updating password:', error);
@@ -663,7 +671,8 @@ async function submitWatchRoom(req, res) {
                 console.log("Data processed successfully.");
             }
         }
-        return res.status(200).json({ message: 'Notifications updated successfully' });
+        // return res.status(200).json({ message: 'Notifications updated successfully' });
+        console.log('SUCCESS!');
 
     } catch (error) {
         console.error('Error:', error);
@@ -673,6 +682,84 @@ async function submitWatchRoom(req, res) {
     }
 
 }
+
+// Created by David
+async function hallAverageOccupancy(req, res) {
+    try {
+        console.log('test1');
+        console.log('test1.1'); // Add this line
+
+        const hall = req.query.hall; // Retrieve hall from query string
+        console.log('test1.5');
+        console.log(hall);
+        let query = 'SELECT date_time, occupied FROM occupancy."Study_Room_History" WHERE hall_name = $1';
+        let params = [hall];
+
+        console.log('test1.9');
+        console.log(query);
+        console.log(params);
+        const client = new Client({
+            user: 'centralteam',
+            host: 'localhost',
+            database: 'occupancy',
+            password: 'C3n7r@1^73@NN',
+            port: 3254,
+        });
+        await client.connect();
+        let averageResult = await client.query(query, params);
+        await client.end();
+        console.log('test2');
+
+        // Initialize an object to store data for each weekday
+        const weeklyData = {
+            Monday: {},
+            Tuesday: {},
+            Wednesday: {},
+            Thursday: {},
+            Friday: {}
+        };
+
+        // Split the average result based on time and weekday
+        averageResult.rows.forEach(row => {
+            const dateTime = new Date(row.date_time);
+            const dayOfWeek = dateTime.getDay();
+            if (dayOfWeek >= 1 && dayOfWeek <= 5) { // Monday (1) to Friday (5)
+                const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];
+                const hour = dateTime.getHours();
+                if (hour >= 8 && hour < 20) {
+                    const key = `${hour}:00-${hour + 1}:00`;
+                    weeklyData[weekday][key] = weeklyData[weekday][key] || { total: 0, occupied: 0 };
+                    weeklyData[weekday][key].total++;
+                    if (row.occupied) {
+                        weeklyData[weekday][key].occupied++;
+                    }
+                }
+            }
+        });
+        console.log('test3');
+
+        // Calculate ratio for each hour range for each weekday
+        for (const weekday in weeklyData) {
+            for (const hourRange in weeklyData[weekday]) {
+                const { total, occupied } = weeklyData[weekday][hourRange];
+                const occupancyRatio = total !== 0 ? occupied / total : 0;
+                weeklyData[weekday][hourRange].occupancyRatio = occupancyRatio;
+            }
+        }
+        console.log('test4');
+
+        // Now weeklyData contains hourly amounts and occupancy ratios for each weekday
+        console.log(weeklyData);
+
+        return res.status(200).json(weeklyData);
+    } catch (error) {
+        console.error('Error executing database query:', error);
+        return res.status(500).json({ error: 'Error executing database query' });
+    }
+}
+
+
+
 
 module.exports = {
     getUserData,
@@ -687,5 +774,8 @@ module.exports = {
     scheduleRoom,
     scheduledRooms,
     scheduledRoomPerHall,
-    submitWatchRoom
+    submitWatchRoom,
+    hallAverageOccupancy
 };
+
+
