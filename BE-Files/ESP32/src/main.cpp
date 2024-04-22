@@ -16,14 +16,11 @@
 #define SAMPLING 15000 
 
 // Sampling/Interval Variables
-unsigned long endTime, uptime, lastStatus, lastAMG;
+unsigned long uptime;
 int  vSTATUSINTERVAL, vAMGSAMPLING;
 
 // AMG Thermal Sensor Constants
 Adafruit_AMG88xx amg;
-unsigned long delayTime;
-#define AMG_COLS 8
-#define AMG_ROWS 8
 float pixels[AMG88xx_PIXEL_ARRAY_SIZE];
 
 // Connection to Raspberry PI Constants
